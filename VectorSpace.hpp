@@ -10,7 +10,7 @@ class VectorSpace {
     public:
         VectorSpace() : dimension(0), standard_basis(Vector(std::vector<double>{0})) {}
         VectorSpace(int input_dimension) : dimension(0), standard_basis(Vector(std::vector<double>(1, input_dimension))) {
-
+            
         }
 
         // 'dim' operator

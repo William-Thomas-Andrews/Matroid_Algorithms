@@ -22,6 +22,7 @@
 // #include <omp.h>
 #include <chrono> 
 #include <random>
+#include <Vector.hpp>
 
 
 
@@ -31,30 +32,55 @@ class Matrix {
     private:
     int rows;
     int columns;
-    std::vector<double> data;
+    std::vector<std::vector<double>> data; // columns entries of row vectors
     
 public:
-    Matrix(int r, int c) : rows(r), columns(c), data(r*c, 0.0) {}
-    Matrix(int item, int r, int c) : rows(r), columns(c), data(r*c, item) {}
-    Matrix(const std::vector<double> input_data, int r, int c) : rows(r), columns(c), data(input_data) { if (input_data.size() != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); } }
-    Matrix(const double* input_data, int input_data_size, int r, int c) : rows(r), columns(c), data(input_data, input_data + input_data_size) { if (input_data_size != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); } }
+    Matrix(int r, int c) : rows(r), columns(c) {
+        for (int i = 0; i < data.size(); i++) {
+            data.push_back(std::vector<double>(r, 0));
+        }
+    }
+    Matrix(double item, int r, int c) : rows(r), columns(c) {
+        for (int i = 0; i < data.size(); i++) {
+            data.push_back(std::vector<double>(r, item));
+        }
+    }
+    Matrix(const std::vector<std::vector<double>> input_data, int r, int c) : rows(r), columns(c) { 
+        if (input_data.size() != c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
+        for (int i = 0; i < c; i++) {
+            data.push_back({});
+            for (int j = 0; j < input_data[i].size(); j++) {
+                data[i].push_back(input_data[i][j]);
+            }
+        } 
+    }
+    // TODO Fix C-style array input
+    // Matrix(const double* input_data, int input_data_size, int r, int c) : rows(r), columns(c), data(input_data, input_data + input_data_size) { 
+    //     if (input_data_size != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); } 
+    //     for (int i = 0; i < c; i++) {
+    //         data.push_back({});
+    //         for (int j = 0; j < input_data[i].size(); j++) {
+    //             data[i].push_back(input_data[i][j]);
+    //         }
+    //     } 
+    // }
     // TODO std::array input
     ~Matrix() {}
     void print() { std::cout << get_string(); }
 
     // Operators
-    Matrix operator()(int row_index) const { // Index operator, returns a new vector of the same data (still a matrix)
-        if (rows <= row_index) {
-            throw std::out_of_range("Row index out of range");
+    Vector operator()(int col_index) const { // Index operator, returns a new vector of the same data (still a matrix)
+        if (columns <= col_index) {
+            throw std::out_of_range("Column index out of range");
             exit(1);
         }
-        if (0 > row_index) {
-            throw std::out_of_range("Row index cannot be negative");
+        if (0 > col_index) {
+            throw std::out_of_range("Column index cannot be negative");
             exit(1);
         }
-        std::vector<double> return_data = {};
+        Vector return_data = {};
         for (int i = 0; i < columns; i++) {
-            return_data.push_back(data[i + row_index*columns]);
+            return_data.add(data[i + col_index*rows]);
         }
         return Matrix(return_data, 1, columns);
     }
