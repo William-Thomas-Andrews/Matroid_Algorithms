@@ -5,6 +5,7 @@
 #include <cmath>
 #include <sstream>
 
+// A Mathematical Vector (in algebraic context)
 class Vector {
     private:
         std::vector<double> data;
@@ -14,19 +15,22 @@ class Vector {
         Vector() : dimension(0), data({}) {}
         Vector(std::vector<double> input) : dimension(input.size()), data(input) {}
         Vector(int size, double element) : dimension(size), data(std::vector<double>(size, element)) {}
+        ~Vector() {}
 
+        // Get Vector Dimension
         int dim() const {
             return dimension;
         }
 
+        // Get Vector Data
         const std::vector<double>& get_data() const {
             return data;
         }
-
         std::vector<double>& get_data() {
             return data;
         }
 
+        // Get Vector String
         std::string get_string() {
             std::string str = "(";
             for (int i = 0; i < dimension; i++) {
@@ -37,11 +41,6 @@ class Vector {
             str.append(")");
             return str;
         }
-
-
-        // std::vector<double>& get_data() {
-        //     return data;
-        // }
 
         // Element Accessor []
         double& operator[](int index) {
@@ -92,11 +91,7 @@ class Vector {
             this->dimension = other.dimension;
         }
 
-        // void add(double& element) {
-        //     data.push_back(element);
-        //     dimension++;
-        // }
-
+        // Add Element
         void add(double element) {
             data.push_back(element);
             dimension++;

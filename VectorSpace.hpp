@@ -36,6 +36,13 @@ class VectorSpace {
             return *matrix_collection[index];
         }
 
+        bool check_linear_independence(Matrix& A, Vector& v) {
+            if (A.is_linearly_independent(v)) {
+                return true;
+            }
+            return false;
+        }
+
         // 'dim' operator
         friend int dim(const VectorSpace& V);
 };

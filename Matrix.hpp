@@ -1,4 +1,4 @@
-#pragma once
+// #pragma once
 
 
 #include <array>
@@ -342,6 +342,18 @@ public:
         return B;
     }
 
+    // TODO: Row echelon form creator
+    void row_echelon_form() {
+        // Turns the 'this' matrix into row echelon form
+    }
+
+    bool is_linearly_independent(Vector& v) {
+        // TODO: Gaussian logic~
+        // updates linear indepenence
+        return true;
+    }
+
+    // TODO: Implement dot products
     friend std::ostream& operator<<(std::ostream& os, const Matrix& A);
     friend Matrix dot_serial(const Matrix& A, const Matrix& B);
     friend Matrix dot_static_parallel_for(const Matrix& A, const Matrix& B);
