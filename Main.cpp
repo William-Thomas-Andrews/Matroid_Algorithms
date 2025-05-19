@@ -16,4 +16,12 @@ int main() {
     std::cout << V.get_matrix(0) << std::endl;
     Matrix rando = Matrix(2, 4);
     std::cout << rando << std::endl;
+    Matrix B = V.get_matrix(0);
+    std::cout << B << std::endl;
+    B = B*3;
+    std::cout << B << std::endl;
+    B.Transpose();
+    Matrix B3 = B.Transpose();
+    std::cout << B3 << std::endl;
+    std::cout << B << std::endl;
 }

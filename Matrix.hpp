@@ -38,21 +38,20 @@ private:
     
 public:
     Matrix() : rows(0), columns(0) { // Empty Matrix
-        data.push_back(Vector());
+        // data.push_back(Vector());
     }
     Matrix(int r, int c) : rows(r), columns(c) { // Random data
-
-        double lower_bound = 0; // Positive for now
-        double upper_bound = 10;
-        std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
-        std::default_random_engine re;
+        double min = 0; // Positive for now
+        double max = 10;
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<double> dis(min, max);
         for (int col = 0; col < columns; col++) {
             data.push_back(Vector());
             for (int row = 0; row < rows; row++) {
-                data[col].add(unif(re));
-            } // Not actually random
+                data[col].add(dis(gen));
+            }
         }
-        
     }
     Matrix(double item, int r, int c) : rows(r), columns(c) { // Uniform data
         for (int i = 0; i < c; i++) {
@@ -97,17 +96,28 @@ public:
 
     void add_vector(Vector v) {
         data.push_back(v);
+        columns++;
+        if (rows < v.dim()) {
+            rows = v.dim();
+        }
     }
+
+    // void extend_vector(int col_index, double val) {
+    //     if 
+    //     // data[col_index].add(val);
+    //     // rows++;
+    //     // for (int i = 0; i < columns; i++) {
+    //     //     if (i == col_index) continue;
+    //     // }
+    // }
 
     // Operators
     Vector operator()(int col_index) { // Index operator, returns a new vector of the same data (still a matrix)
         if (columns <= col_index) {
             throw std::out_of_range("Column index out of range");
-            exit(1);
         }
         if (0 > col_index) {
             throw std::out_of_range("Column index cannot be negative");
-            exit(1);
         }
         Vector return_vector = {};
         for (int i = 0; i < columns; i++) {
@@ -118,19 +128,15 @@ public:
     double& operator()(int row_index, int col_index) { // Index operator, returns an entry in the matrix
         if (rows <= row_index) {
             throw std::out_of_range("Row index out of range");
-            exit(1);
         }
         if (0 > row_index) {
             throw std::out_of_range("Row index cannot be negative");
-            exit(1);
         }
         if (columns <= col_index) {
             throw std::out_of_range("Column index out of range");
-            exit(1);
         }
         if (0 > col_index) {
             throw std::out_of_range("Column index cannot be negative");
-            exit(1);
         }
         return data[col_index][row_index];
     }
@@ -155,33 +161,48 @@ public:
         return data[col_index][row_index];
     }
     // TODO: Fix below
-    // Matrix operator+(const Matrix& other) {
-    //     if (this->rows != other.rows) {
-    //         throw std::invalid_argument("Row sizes must match to perform matrix element-wise addition.");
-    //     }
-    //     if (this->columns != other.columns) {
-    //         throw std::invalid_argument("Column sizes must match to perform matrix element-wise addition.");
-    //     }
-    //     Matrix return_matrix = Matrix(data, rows, columns);
-    //     // Matrix return_matrix = Matrix(this.data, this.size, this.rows, this.columns);
-    //     for (int i = 0; i < this->get_size(); i++) {
-    //         return_matrix.data[i] += other.data[i];
-    //     }
-    //     return return_matrix;
-    // }
-    // Matrix operator-(const Matrix& other) {
-    //     if (this->rows != other.rows) {
-    //         throw std::invalid_argument("Row sizes must match to perform matrix element-wise subtraction.");
-    //     }
-    //     if (this->columns != other.columns) {
-    //         throw std::invalid_argument("Column sizes must match to perform matrix element-wise subtraction.");
-    //     }
-    //     Matrix return_matrix = Matrix(data, this->rows, this->columns);
-    //     for (int i = 0; i < this->get_size(); i++) {
-    //         return_matrix.data[i] -= other.data[i];
-    //     }
-    //     return return_matrix;
-    // }
+    Matrix operator+(Matrix& other) {
+        if (this->rows != other.rows) {
+            throw std::invalid_argument("Row sizes must match to perform matrix element-wise addition.");
+        }
+        if (this->columns != other.columns) {
+            throw std::invalid_argument("Column sizes must match to perform matrix element-wise addition.");
+        }
+        Matrix return_matrix = Matrix(data, rows, columns);
+        for (int i = 0; i < this->get_size(); i++) {
+            return_matrix.data[i] += other.data[i];
+        }
+        return return_matrix;
+    }
+    Matrix operator-(Matrix& other) {
+        if (this->rows != other.rows) {
+            throw std::invalid_argument("Row sizes must match to perform matrix element-wise subtraction.");
+        }
+        if (this->columns != other.columns) {
+            throw std::invalid_argument("Column sizes must match to perform matrix element-wise subtraction.");
+        }
+        Matrix return_matrix = Matrix(data, this->rows, this->columns);
+        for (int i = 0; i < this->get_size(); i++) {
+            return_matrix.data[i] -= other.data[i];
+        }
+        return return_matrix;
+    }
+    Matrix operator*(double scalar) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                this->get_element(i, j) *= scalar;
+            }
+        }
+        return *this;
+    }
+    Matrix operator/(double scalar) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                this->get_element(i, j) /= scalar;
+            }
+        }
+        return *this;
+    }
 
     // Matrix operator*(const Matrix& other) {
     //     if (this->rows != other.rows) {
@@ -277,23 +298,30 @@ public:
         }
         return str;
     }
+    std::string get_trucated_matrix_string() { // a copy of the data in a string format (originally arithmetic data)
+        std::string str = "";
+        for (int i = 0; i < rows; i++) {
+            str.append("[ ");
+            for (int j = 0; j < columns; j++) {
+                str.append(std::to_string(static_cast<int>(this->get_element(i, j))) + " ");
+            }
+            str.append("]\n");
+        }
+        return str;
+    }
 
-    int get_element(int row_index, int col_index) {
+    double& get_element(int row_index, int col_index) {
         if (rows <= row_index) {
             throw std::out_of_range("Row index out of range");
-            return INT_MIN;
         }
         if (0 > row_index) {
             throw std::out_of_range("Row index cannot be negative");
-            return INT_MIN;
         }
         if (columns <= col_index) {
             throw std::out_of_range("Column index out of range");
-            return INT_MIN;
         }
         if (0 > col_index) {
             throw std::out_of_range("Column index cannot be negative");
-            return INT_MIN;
         }
         return data[col_index][row_index];
     }
@@ -301,18 +329,18 @@ public:
     int get_rows() { return rows; }
     int get_columns() { return columns; }
 
-    // The transpose operation
-    // Matrix Transpose() {
-    //     Matrix B = Matrix(columns, rows);
-    //     int B_index = 0;
-    //     for (int i = 0; i < columns; i++) {
-    //         for (int j = i; j < i+(columns*rows); j+=columns) {
-    //             B.data[B_index] = data[j];
-    //             B_index++;
-    //         }
-    //     }
-    //     return B;
-    // }
+    // Transpose Operation
+    Matrix Transpose() {
+        Matrix B = Matrix();
+        for (int i = 0; i < rows; i++) {
+            Vector v = Vector();
+            for (int j = 0; j < columns; j++) {
+                v.add(this->get_element(i, j));
+            }
+            B.add_vector(v);
+        }
+        return B;
+    }
 
     friend std::ostream& operator<<(std::ostream& os, const Matrix& A);
     friend Matrix dot_serial(const Matrix& A, const Matrix& B);
@@ -324,6 +352,6 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& os, Matrix& A) {
-    os << A.get_matrix_string();
+    os << A.get_trucated_matrix_string();
     return os;
 }
