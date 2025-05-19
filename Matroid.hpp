@@ -1,28 +1,28 @@
 #include "VectorSpace.hpp"
 #include "Graph.hpp"
 #include "Oracle.hpp"
+#include "Set.hpp"
 
-// TODO: overload first, then use templates
+template <class SET_TYPE, typename ELEMENT_TYPE>
 class Matroid {
     private:
+        Set<SET_TYPE, ELEMENT_TYPE> ground_set;
+        Set<SET_TYPE, ELEMENT_TYPE> solution_set;
         Oracle oracle;
-        Graph G;
-        Matrix A;
-        int matroid_type;
     public:
-        Matroid(Graph graph) : G(graph), matroid_type(1) {}
-        Matroid(Matrix matrix) : A(matrix), matroid_type(2) {}
+        Matroid() : ground_set(Set<SET_TYPE, ELEMENT_TYPE>()), solution_set(Set<SET_TYPE, ELEMENT_TYPE>()) {}
+        Matroid(SET_TYPE input_set) : ground_set(Set<SET_TYPE, ELEMENT_TYPE>(input_set)), solution_set(Set<SET_TYPE, ELEMENT_TYPE>()) {}
 
-        auto optimize_matroid() {
-            std::sort_heap(edge_set);
-            for (int i = 0; i < edge_set.size(); i++) {
-                if (oracle.independent(A, e)) {
-                    add e to new set
+        // MAKE SURE TO COPY GROUND SET NOT CHANGE ACTUAL
+        SET_TYPE optimize_matroid() {
+            // ground_set.sort();
+            while (ground_set.not_empty()) {
+                auto e = ground_set.top();
+                if (oracle.independent(solution_set, e)) {
+                    solution_set.add(e);
                 }
-                else {
-                    pop e
-                }
+                ground_set.pop();
             }
-            return set;
+            return solution_set;
         }
 };
