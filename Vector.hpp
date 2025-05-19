@@ -190,12 +190,12 @@ Vector operator*(double& scalar, Vector& v) {
 }
 Vector operator*(Vector& v, double& scalar) {
     Vector result = Vector();
-    // for (auto x : v.data) {
-    //     result.add(x * scalar);
-    // }
-    for (int i = 0; i < v.dimension; i++) {
-        result.add(v.data[i] * scalar);
+    for (auto x : v.data) {
+        result.add(x * scalar);
     }
+    // for (int i = 0; i < v.dimension; i++) {
+    //     result.add(v.data[i] * scalar);
+    // }
     return result;
 }
 

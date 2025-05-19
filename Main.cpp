@@ -10,7 +10,10 @@ int main() {
     
     // std::cout << A.get_columns() << std::endl;
     // std::cout << A.get_rows() << std::endl;
-    std::cout << A << std::endl;
-    // V.add_matrix(A);
-
+    // std::cout << A << std::endl;
+    V.add_matrix(A);
+    V.print_standard_basis();
+    std::cout << V.get_matrix(0) << std::endl;
+    Matrix rando = Matrix(2, 4);
+    std::cout << rando << std::endl;
 }

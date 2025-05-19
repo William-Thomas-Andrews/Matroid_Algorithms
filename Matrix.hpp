@@ -30,29 +30,34 @@
 
 
 class Matrix {
-    private:
+private:
     int rows;
     int columns;
     std::vector<Vector> data; // columns entries of row vectors
     // bool linearly_independent;
     
 public:
-    Matrix() : rows(0), columns(0) {
+    Matrix() : rows(0), columns(0) { // Empty Matrix
         data.push_back(Vector());
     }
-    Matrix(int r, int c) : rows(r), columns(c) {
-        for (int i = 0; i < c; i++) {
-            data.push_back(Vector(r, 0));
+    Matrix(int r, int c) : rows(r), columns(c) { // Random data
+
+        double lower_bound = 0; // Positive for now
+        double upper_bound = 10;
+        std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
+        std::default_random_engine re;
+        for (int col = 0; col < columns; col++) {
+            data.push_back(Vector());
+            for (int row = 0; row < rows; row++) {
+                data[col].add(unif(re));
+            } // Not actually random
         }
+        
     }
-    Matrix(double item, int r, int c) : rows(r), columns(c) {
+    Matrix(double item, int r, int c) : rows(r), columns(c) { // Uniform data
         for (int i = 0; i < c; i++) {
-            // data.push_back(std::vector<double>(r, item));
             data.push_back(Vector(r, item));
-            std::cout << data[i] << std::endl;
-            std::cout << data.size() << std::endl;
         }
-        std::cout << item << std::endl;
     }
     Matrix(const std::vector<Vector> input_data, int r, int c) : rows(r), columns(c) { 
         if (input_data.size() != c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
@@ -83,7 +88,11 @@ public:
     //     } 
     // }
     // TODO std::array input
+    // Copy Constructor
+    Matrix(const Matrix& A) : rows(A.rows), columns(A.columns), data(A.data) {}
+    // Destructor
     ~Matrix() {}
+
     void print() { std::cout << get_matrix_string(); }
 
     void add_vector(Vector v) {
@@ -102,7 +111,6 @@ public:
         }
         Vector return_vector = {};
         for (int i = 0; i < columns; i++) {
-            // return_data.add(data[i + col_index*rows]);
             return_vector.add(data[col_index][i]);
         }
         return return_vector;

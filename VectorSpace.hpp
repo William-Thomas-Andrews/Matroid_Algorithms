@@ -21,17 +21,25 @@ class VectorSpace {
             }
         }
 
-        void add_matrix(Matrix A) {
+        void add_matrix(Matrix& A) {
             if (A.get_rows() > dimension) { throw std::invalid_argument("The input matrix cannot have a larger dimension than the vector space"); }
-            matrix_collection.push_back(std::make_unique<Matrix>(A));
+            std::unique_ptr<Matrix> ptr = std::make_unique<Matrix>(A);
+            matrix_collection.push_back(std::move(ptr));
         }
 
-        // Matrix get_matrix()
+        void print_standard_basis() {
+            std::cout << standard_basis << std::endl;
+        }
+
+        Matrix& get_matrix(int index) {
+            if (index >= dimension or index < 0) { throw std::invalid_argument("Index out of bounds"); }
+            return *matrix_collection[index];
+        }
 
         // 'dim' operator
-        friend int dim(VectorSpace V);
+        friend int dim(const VectorSpace& V);
 };
 
-int dim(VectorSpace V) {
+int dim(const VectorSpace& V) {
     return V.dimension;
 }
