@@ -7,7 +7,7 @@ template <typename ELEMENT_TYPE>
 class Compare {
     public:
         bool operator()(ELEMENT_TYPE a, ELEMENT_TYPE b) {
-            if (a.value > b.value) {
+            if (a.get_weight() > b.get_weight()) {
                 return true;
             }
             return false;
