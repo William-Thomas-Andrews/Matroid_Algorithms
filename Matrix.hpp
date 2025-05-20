@@ -1,29 +1,29 @@
 // #pragma once
 
 
-#include <array>
-#include <iostream>
-#include <string>
-#include <stdexcept> 
-#include <vector>
-#include <initializer_list>
-#include <cmath>
-#include <cstdlib>
-#include <ranges>
-#include <concepts> 
-#include <iomanip>
-#include <thread>
-#include <future>
-#include <type_traits>
-#include <variant>
-#include <any>
-#include <execution>
-#include <algorithm>
+// #include <array>
+// #include <iostream>
+// #include <string>
+// #include <stdexcept> 
+// #include <vector>
+// #include <initializer_list>
+// #include <cmath>
+// #include <cstdlib>
+// #include <ranges>
+// #include <concepts> 
+// #include <iomanip>
+// #include <thread>
+// #include <future>
+// #include <type_traits>
+// #include <variant>
+// #include <any>
+// #include <execution>
+// #include <algorithm>
 // #include <omp.h>
-#include <chrono> 
+// #include <chrono> 
 #include <random>
 #include "Vector.hpp"
-#include <string>
+// #include <string>
 
 
 

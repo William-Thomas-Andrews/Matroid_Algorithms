@@ -8,6 +8,8 @@ class UnionFind {
     public:
         UnionFind() {}
         UnionFind(int size) : union_data(size, -1) {}
+
+        // TODO: MAKE MORE DYNAMICALLY SIZED
         
         void union_operation(Vertex v, Vertex u) {
             Vertex v_index = find_operation(v);

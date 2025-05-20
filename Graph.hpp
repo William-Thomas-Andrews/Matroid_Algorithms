@@ -7,17 +7,6 @@
 using Vertex = unsigned long;
 using Weight = unsigned long;
 
-// template <typename ELEMENT_TYPE>
-// class Compare {
-//     public:
-//         bool operator()(ELEMENT_TYPE a, ELEMENT_TYPE b) {
-//             if (a.get_weight() > b.get_weight()) {
-//                 return true;
-//             }
-//             return false;
-//         }
-// };
-
 class Edge {
     private:
         Vertex v;
@@ -78,7 +67,7 @@ class Graph {
             }
         }
 
-        // Matroid functions --------------------------------------------------------------------------------------------------
+        // Matroid functions begin --------------------------------------------------------------------------------------------------
         void min_sort() {
             std::sort(edges.begin(), edges.end(), MinCompare<Edge>{});
         }
@@ -103,30 +92,22 @@ class Graph {
 
         // If adding Edge e does not create a cycle then it will return true
         bool is_independent(Edge& e) {
-            std::cout << "here2" << std::endl;
-            std::cout << e << std::endl;
-            std::cout << union_set.find_operation(e.get_left()) << std::endl;
-            std::cout << union_set.find_operation(e.get_right()) << std::endl;
             // If both sides of the edge are in the same partition, 
             if (union_set.find_operation(e.get_left()) == union_set.find_operation(e.get_right())) {
                 return false; // then it creates a cycle and we return false because adding 'e' is not valid if we want to keep the graph acyclic
             }
-            std::cout << "here1" << std::endl;
             return true; // otherwise, return true because both parititions are disjoint
         }   
 
         void add(Edge e) {
             edges.push_back(e);
-            // std::cout << e.get_right() << std::endl;
-            // std::cout << union_set << std::endl;
-            // std::cout << union_set.find_operation(e.get_left()) << std::endl;
             union_set.union_operation(e.get_left(), e.get_right());
         }
 
         void pop() {
             edges.pop_back();
         }
-        // ------------------------------------------------------------------------------------------------------------------
+        // Matroid functions end ---------------------------------------------------------------------------------------------------------
 
         const std::vector<Edge>& get_elements() {
             return edges;
