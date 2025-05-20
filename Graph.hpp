@@ -62,7 +62,7 @@ class Graph {
         Graph(std::vector<std::tuple<Vertex, Vertex, Weight>> input_data) : union_set(UnionFind(input_data.size())) {
             for (auto x : input_data) {
                 Edge e = Edge(std::get<0>(x), std::get<1>(x), std::get<2>(x));
-                this->add(e);
+                this->add_element(e);
                 union_set.union_operation(e.get_left(), e.get_right());
             }
         }
@@ -99,7 +99,7 @@ class Graph {
             return true; // otherwise, return true because both parititions are disjoint
         }   
 
-        void add(Edge e) {
+        void add_element(Edge e) {
             edges.push_back(e);
             union_set.union_operation(e.get_left(), e.get_right());
         }

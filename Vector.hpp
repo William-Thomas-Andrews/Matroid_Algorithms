@@ -1,9 +1,5 @@
-// #include <array>
-// #include <vector>
-// #include <limits>
-// #include <algorithm>
-// #include <cmath>
-// #include <sstream>
+
+
 
 // A Mathematical Vector (in algebraic context)
 class Vector {

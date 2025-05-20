@@ -1,32 +1,5 @@
-// #pragma once
-
-
-// #include <array>
-// #include <iostream>
-// #include <string>
-// #include <stdexcept> 
-// #include <vector>
-// #include <initializer_list>
-// #include <cmath>
-// #include <cstdlib>
-// #include <ranges>
-// #include <concepts> 
-// #include <iomanip>
-// #include <thread>
-// #include <future>
-// #include <type_traits>
-// #include <variant>
-// #include <any>
-// #include <execution>
-// #include <algorithm>
-// #include <omp.h>
-// #include <chrono> 
 #include <random>
 #include "Vector.hpp"
-// #include <string>
-
-
-
 
 
 class Matrix {
@@ -34,6 +7,7 @@ private:
     int rows;
     int columns;
     std::vector<Vector> data; // columns entries of row vectors
+    bool is_row_reduced = false;
     // bool linearly_independent;
     
 public:
@@ -94,7 +68,7 @@ public:
 
     void print() { std::cout << get_matrix_string(); }
 
-    void add_vector(Vector v) {
+    void add_element(Vector v) {
         data.push_back(v);
         columns++;
         if (rows < v.dim()) {
@@ -337,21 +311,43 @@ public:
             for (int j = 0; j < columns; j++) {
                 v.add(this->get_element(i, j));
             }
-            B.add_vector(v);
+            B.add_element(v);
         }
         return B;
     }
 
-    // TODO: Row echelon form creator
-    void row_echelon_form() {
-        // Turns the 'this' matrix into row echelon form
-    }
-
-    bool is_linearly_independent(Vector& v) {
-        // TODO: Gaussian logic~
-        // updates linear indepenence
+    bool is_independent(Vector& v) {
+        Matrix A = Matrix(0, rows, columns);
+        row_reduce(A);
+        if (rank(A) == rank(*this)) {
+            return false;
+        } 
         return true;
     }
+
+    void switch_row(int row1, int row2) {
+        for (int col = 0; col < columns; col++) {
+            double temp = this->get_element(row1, col);
+            this->get_element(row1, col) = this->get_element(row2, col);
+            this->get_element(row2, col) = temp;
+        }
+    }
+
+    void multiply_row(int row, double scalar) {
+        for (int col = 0; col < columns; col++) {
+            this->get_element(row, col) = this->get_element(row, col) * scalar;
+        }
+    }
+
+    void row_replacement(int root_row, int replacee, double scalar) {
+        for (int col = 0; col < columns; col++) {
+            this->get_element(replacee, col) = this->get_element(replacee, col) + this->get_element(root_row, col) * scalar;
+        }
+    }
+
+    friend void row_reduce(Matrix& A);
+    friend int rank(Matrix& A);
+
 
     // TODO: Implement dot products
     friend std::ostream& operator<<(std::ostream& os, const Matrix& A);
@@ -363,7 +359,37 @@ public:
     friend Matrix dot_fine_grained(const Matrix& A, const Matrix& B);
 };
 
+
+void row_reduce(Matrix& A) {
+    if (A.data.empty()) {
+        return;
+    }
+    // Get 
+    for (int col = 0, row = 0; col < A.columns; col++, row++) {
+        if (row >= A.rows) { break; }
+        int index = row;
+        while (A(index, col) == 0 and index < A.rows-1) { index++; }
+        A.switch_row(row, index);
+        A.multiply_row(row, (1 / A(row, col))); // Multiply the row by the inverse of its selected element
+        for (int i = row+1; i < A.rows; i++) {
+            if (A(i, col) != 0) {
+                A.row_replacement(row, i, (-A(i, col)));
+            }
+        }
+    }
+    A.is_row_reduced = true;
+}
+
+int rank(Matrix& A) {
+    if (A.is_row_reduced == false) {
+        row_reduce(A);
+    }
+    // return 
+}
+
+
 std::ostream& operator<<(std::ostream& os, Matrix& A) {
-    os << A.get_trucated_matrix_string();
+    // os << A.get_trucated_matrix_string();
+    os << A.get_matrix_string();
     return os;
 }

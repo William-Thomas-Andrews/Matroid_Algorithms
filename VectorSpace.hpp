@@ -1,8 +1,6 @@
 #include <iostream>
-// #include <vector>
-// #include <memory>
-// #include "Vector.hpp"
 #include "Matrix.hpp"
+
 
 class VectorSpace {
     private:
@@ -37,7 +35,7 @@ class VectorSpace {
         }
 
         bool check_linear_independence(Matrix& A, Vector& v) {
-            if (A.is_linearly_independent(v)) {
+            if (A.is_independent(v)) {
                 return true;
             }
             return false;

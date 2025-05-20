@@ -10,16 +10,15 @@ class Matroid {
         Oracle<SET_TYPE, ELEMENT_TYPE> oracle;
     public:
         Matroid() : ground_set(SET_TYPE()), solution_set(SET_TYPE()) {}
-        Matroid(SET_TYPE input_set) : ground_set(SET_TYPE(input_set)), solution_set(SET_TYPE(9)) {}
+        Matroid(SET_TYPE& input_set) : ground_set(SET_TYPE(input_set)), solution_set(SET_TYPE()) {}
 
-        // MAKE SURE TO COPY GROUND SET NOT CHANGE ACTUAL
         SET_TYPE optimize_matroid() {
             // ground_set.min_sort();                 // For minimum basis
             ground_set.max_sort();                    // For maximum basis
             while (ground_set.not_empty()) {
-                auto e = ground_set.top();
+                ELEMENT_TYPE e = ground_set.top();
                 if (oracle.independent(solution_set, e)) {
-                    solution_set.add(e);
+                    solution_set.add_element(e);
                 }
                 ground_set.pop();
             }

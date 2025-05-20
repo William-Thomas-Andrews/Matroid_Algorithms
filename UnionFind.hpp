@@ -8,28 +8,42 @@ class UnionFind {
     public:
         UnionFind() {}
         UnionFind(int size) : union_data(size, -1) {}
-
-        // TODO: MAKE MORE DYNAMICALLY SIZED
         
         void union_operation(Vertex v, Vertex u) {
+            if (v >= union_data.size()) {
+                while (union_data.size() <= v) {
+                    union_data.push_back(-1);
+                }
+            }
+            if (u >= union_data.size()) {
+                while (union_data.size() <= u) {
+                    union_data.push_back(-1);
+                }
+            }
             Vertex v_index = find_operation(v);
             Vertex u_index = find_operation(u);
+            if (v_index == u_index) return;
             if (union_data[v_index] < union_data[u_index]) {
                 union_data[v_index] += union_data[u_index];
-                union_data[u] = v_index;
+                union_data[u_index] = v_index;
             }
             if (union_data[v_index] >= union_data[u_index]) {
                 union_data[u_index] += union_data[v_index];
-                union_data[v] = u_index;
+                union_data[v_index] = u_index;
             }
         }
 
         Vertex find_operation(Vertex v) {
+            if (v >= union_data.size()) {
+                while (union_data.size() <= v) {
+                    union_data.push_back(-1);
+                }
+            }
             if (union_data[v] < 0) {
                 return v;
             }
             else {
-                return find_operation(union_data[v]);
+                return union_data[v] = find_operation(union_data[v]);
             }
         }
 

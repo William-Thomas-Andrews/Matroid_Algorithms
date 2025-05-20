@@ -29,10 +29,23 @@ int main() {
     Graph G = Graph(9);
     Edge e1 = Edge(1, 2, 1); Edge e2 = Edge(2, 3, 1); Edge e3 = Edge(1, 3, 2); Edge e4 = Edge(3, 4, 1);Edge e5 = Edge(1, 4, 3); Edge e6 = Edge(5, 4, 5); Edge e7 = Edge(5, 3, 2); Edge e8 = Edge(2, 6, 3); Edge e9 = Edge(5, 6, 6);
     std::cout << e1 << std::endl;
-    G.add(e1); G.add(e2); G.add(e3); G.add(e4); G.add(e5); G.add(e6); G.add(e7); G.add(e8); G.add(e9); 
+    G.add_element(e1); G.add_element(e2); G.add_element(e3); G.add_element(e4); G.add_element(e5); G.add_element(e6); G.add_element(e7); G.add_element(e8); G.add_element(e9); 
     std::cout << e1 << std::endl;
     std::cout << G << std::endl;
     Matroid M = Matroid<Graph, Edge>(G);
     Graph H = M.optimize_matroid();
     std::cout << H << std::endl;
+
+    std::cout << B3 << std::endl;
+    row_reduce(B3);
+    std::cout << B3 << std::endl;
+    // B3.switch_row(0, 8);
+    // B3.multiply_row(0, 100.001);
+    // std::cout << B3 << std::endl;
+    // B3.multiply_row(0, (1/B3(0,0)));
+    // std::cout << B3 << std::endl;
+    // B3.row_replacement(0, 1, (-B3(1,0)));
+    // std::cout << B3 << std::endl;
+    // Matrix B4 = B.Transpose();
+    // std::cout << B4 << std::endl;
 }
