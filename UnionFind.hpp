@@ -1,9 +1,10 @@
 #include <vector>
+#include <iostream>
 using Vertex = unsigned long;
 
 class UnionFind {
     private:
-        std::vector<Vertex> union_data;
+        std::vector<int> union_data;
     public:
         UnionFind() {}
         UnionFind(int size) : union_data(size, -1) {}
@@ -29,4 +30,31 @@ class UnionFind {
                 return find_operation(union_data[v]);
             }
         }
+
+        void print_data() {
+            for (int i = 0; i < union_data.size(); i++) {
+                std::cout << "(" << i << ", " << union_data[i] << ") ";
+            }
+            std::cout << std::endl;
+        }
+
+        std::string get_string() {
+            std::string str = "";
+            std::cout << union_data.size() << std::endl;
+            for (int i = 0; i < union_data.size(); i++) {
+                str += "(";
+                str += std::to_string(i);
+                str += ", ";
+                str += std::to_string(union_data[i]);
+                str += ") ";
+            }
+            return str;
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, UnionFind union_set);
 };
+
+std::ostream& operator<<(std::ostream& os, UnionFind union_set) {
+    os << union_set.get_string();
+    return os;
+}

@@ -1,9 +1,22 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "UnionFind.hpp"
+#include "Compare.hpp"
 
 using Vertex = unsigned long;
 using Weight = unsigned long;
+
+// template <typename ELEMENT_TYPE>
+// class Compare {
+//     public:
+//         bool operator()(ELEMENT_TYPE a, ELEMENT_TYPE b) {
+//             if (a.get_weight() > b.get_weight()) {
+//                 return true;
+//             }
+//             return false;
+//         }
+// };
 
 class Edge {
     private:
@@ -18,6 +31,9 @@ class Edge {
             str += std::to_string(v);
             str += " - ";
             str += std::to_string(u);
+            str += ")";
+            str += "(";
+            str += std::to_string(weight);
             str += ")";
             return str;
         }
@@ -46,28 +62,90 @@ std::ostream& operator<<(std::ostream& os, Edge& e) {
     return os;
 }
 
+
 class Graph {
     private:
         std::vector<Edge> edges;
+        UnionFind union_set;
     public:
         Graph() {}
-        Graph(std::vector<std::tuple<Vertex, Vertex, Weight>> input_data) {
+        Graph(int size) : union_set(UnionFind(size)) {}
+        Graph(std::vector<std::tuple<Vertex, Vertex, Weight>> input_data) : union_set(UnionFind(input_data.size())) {
             for (auto x : input_data) {
                 Edge e = Edge(std::get<0>(x), std::get<1>(x), std::get<2>(x));
-                this->add_edge(e);
+                this->add(e);
+                union_set.union_operation(e.get_left(), e.get_right());
             }
-         }
+        }
 
-         std::vector<Edge>& get_edges() {
-            return edges;
-         }
+        // Matroid functions --------------------------------------------------------------------------------------------------
+        void min_sort() {
+            std::sort(edges.begin(), edges.end(), MinCompare<Edge>{});
+        }
 
-        void add_edge(Edge& e) {
-            edges.push_back(e);
+        void max_sort() {
+            std::sort(edges.begin(), edges.end(), MaxCompare<Edge>{});
+        }
+
+        bool not_empty() {
+            if (edges.empty()) {
+                return false;
+            }
+            return true;
+        }
+
+        Edge top() {
+            if (edges.empty()) { throw std::runtime_error("Cannot get first element of an empty graph"); }
+            else {
+                return edges[edges.size()-1];
+            }
         }
 
         // If adding Edge e does not create a cycle then it will return true
-        bool is_not_cycle(Edge& e) {
-            if (e.get_left)
+        bool is_independent(Edge& e) {
+            std::cout << "here2" << std::endl;
+            std::cout << e << std::endl;
+            std::cout << union_set.find_operation(e.get_left()) << std::endl;
+            std::cout << union_set.find_operation(e.get_right()) << std::endl;
+            // If both sides of the edge are in the same partition, 
+            if (union_set.find_operation(e.get_left()) == union_set.find_operation(e.get_right())) {
+                return false; // then it creates a cycle and we return false because adding 'e' is not valid if we want to keep the graph acyclic
+            }
+            std::cout << "here1" << std::endl;
+            return true; // otherwise, return true because both parititions are disjoint
         }   
+
+        void add(Edge e) {
+            edges.push_back(e);
+            // std::cout << e.get_right() << std::endl;
+            // std::cout << union_set << std::endl;
+            // std::cout << union_set.find_operation(e.get_left()) << std::endl;
+            union_set.union_operation(e.get_left(), e.get_right());
+        }
+
+        void pop() {
+            edges.pop_back();
+        }
+        // ------------------------------------------------------------------------------------------------------------------
+
+        const std::vector<Edge>& get_elements() {
+            return edges;
+        }
+
+        std::string get_string() {
+            std::string str = "";
+            for (auto edge : edges) {
+                str += edge.get_string();
+                str += " ";
+            }
+            str += "\n";
+            return str;
+        }
+
+        friend std::ostream& operator<<(std::ostream& os, Graph& G);
 };
+
+std::ostream& operator<<(std::ostream& os, Graph& G) {
+    os << G.get_string();
+    return os;
+}
