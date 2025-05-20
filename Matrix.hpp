@@ -8,7 +8,7 @@ private:
     int columns;
     std::vector<Vector> data; // columns entries of row vectors
     bool is_row_reduced = false;
-    // bool linearly_independent;
+    // bool linearly_independent = false;
     
 public:
     Matrix() : rows(0), columns(0) { // Empty Matrix
@@ -26,11 +26,13 @@ public:
                 data[col].add(dis(gen));
             }
         }
+        row_reduce(*this);
     }
     Matrix(double item, int r, int c) : rows(r), columns(c) { // Uniform data
         for (int i = 0; i < c; i++) {
             data.push_back(Vector(r, item));
         }
+        row_reduce(*this);
     }
     Matrix(const std::vector<Vector> input_data, int r, int c) : rows(r), columns(c) { 
         if (input_data.size() != c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
@@ -40,6 +42,7 @@ public:
                 data[i].add(input_data[i][j]);
             }
         } 
+        row_reduce(*this);
     }
     Matrix(const std::vector<std::vector<double>> input_data, int r, int c) : rows(r), columns(c) { 
         if (input_data.size() != c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
@@ -49,6 +52,7 @@ public:
                 data[i].add(input_data[i][j]);
             }
         } 
+        row_reduce(*this);
     }
     // TODO Fix C-style array input
     // Matrix(const double* input_data, int input_data_size, int r, int c) : rows(r), columns(c), data(input_data, input_data + input_data_size) { 
@@ -62,18 +66,25 @@ public:
     // }
     // TODO std::array input
     // Copy Constructor
-    Matrix(const Matrix& A) : rows(A.rows), columns(A.columns), data(A.data) {}
+    Matrix(const Matrix& A) : rows(A.rows), columns(A.columns), data(A.data) {
+        row_reduce(*this);
+    }
     // Destructor
     ~Matrix() {}
 
     void print() { std::cout << get_matrix_string(); }
 
     void add_element(Vector v) {
-        data.push_back(v);
-        columns++;
-        if (rows < v.dim()) {
+        if (rows > v.dim()) {
+            while (v.dim() < rows) {
+                v.add(0);
+            }
+        }
+        else if (rows < v.dim()) {
             rows = v.dim();
         }
+        data.push_back(v);
+        columns++;
     }
 
     // void extend_vector(int col_index, double val) {
@@ -266,7 +277,12 @@ public:
         for (int i = 0; i < rows; i++) {
             str.append("[ ");
             for (int j = 0; j < columns; j++) {
-                str.append(std::to_string(this->get_element(i, j)) + " ");
+                if (this->get_element(i, j) == 0) {
+                    str.append(std::to_string(0.0) + " ");
+                }
+                else {
+                    str.append(std::to_string(this->get_element(i, j)) + " ");
+                }
             }
             str.append("]\n");
         }
@@ -317,8 +333,16 @@ public:
     }
 
     bool is_independent(Vector& v) {
-        Matrix A = Matrix(0, rows, columns);
+        // First to check if it is the zero vector
+        int count = 0;
+        for (auto x : v.get_data()) {
+            if (x == 0) count++;
+        }
+        if (count == v.dim()) return false; // If yes, then it returns false because adding the zero vector makes the matrix linearly dependent
+        Matrix A = *this;
+        A.add_element(v);
         row_reduce(A);
+        std::cout << rank(A) << " " << rank(*this) << std::endl;
         if (rank(A) == rank(*this)) {
             return false;
         } 
@@ -364,7 +388,6 @@ void row_reduce(Matrix& A) {
     if (A.data.empty()) {
         return;
     }
-    // Get 
     for (int col = 0, row = 0; col < A.columns; col++, row++) {
         if (row >= A.rows) { break; }
         int index = row;
@@ -381,15 +404,29 @@ void row_reduce(Matrix& A) {
 }
 
 int rank(Matrix& A) {
-    if (A.is_row_reduced == false) {
-        row_reduce(A);
+    // if (A.is_row_reduced == false) {
+    //     row_reduce(A);
+    //     st
+    // }
+    // This function broke boa
+    int rank = 0;
+    for (int row = 0; row < A.rows; row++) {
+        for (int col = 0; col < A.columns; col++) {
+            if (A(row, col) != 0) {
+                // std::cout << row << " " << col << std::endl;
+                std::cout << A(row, col) << std::endl;
+                rank++;
+                break;
+            }
+        }
     }
-    // return 
+    std::cout << "rank" << rank << std::endl;
+    return rank;
 }
 
 
 std::ostream& operator<<(std::ostream& os, Matrix& A) {
-    // os << A.get_trucated_matrix_string();
-    os << A.get_matrix_string();
+    os << A.get_trucated_matrix_string();
+    // os << A.get_matrix_string();
     return os;
 }
