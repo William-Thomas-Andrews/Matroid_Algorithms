@@ -1,7 +1,0 @@
-
-
-class GraphAlgorithms {
-    private:
-    public:
-
-};

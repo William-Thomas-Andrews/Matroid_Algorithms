@@ -1,4 +1,5 @@
 #include <random>
+#include <iostream>
 #include "Vector.hpp"
 
 
@@ -26,7 +27,7 @@ public:
                 data[col].add(dis(gen));
             }
         }
-        row_reduce(*this);
+        // row_reduce(*this);
     }
     Matrix(double item, int r, int c) : rows(r), columns(c) { // Uniform data
         for (int i = 0; i < c; i++) {
@@ -54,6 +55,19 @@ public:
         } 
         row_reduce(*this);
     }
+    // // Reads column wise. TODO change to also be able to read row wise.
+    // Matrix(const std::vector<double> input_data, int r, int c) : rows(r), columns(c) {
+    //     if (input_data.size() != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
+    //     int index = 0;
+    //     for (int j = 0; j < columns; j++) {
+    //         Vector v = Vector();
+    //         for (int i = 0; i < rows; i++) {
+    //             v.add(input_data[i + j*rows]);
+    //             index++;
+    //         }
+    //         this->add_element(v);
+    //     }
+    // }
     // TODO Fix C-style array input
     // Matrix(const double* input_data, int input_data_size, int r, int c) : rows(r), columns(c), data(input_data, input_data + input_data_size) { 
     //     if (input_data_size != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); } 
@@ -188,33 +202,6 @@ public:
         }
         return *this;
     }
-
-    // Matrix operator*(const Matrix& other) {
-    //     if (this->rows != other.rows) {
-    //         throw std::invalid_argument("Row sizes must match to perform matrix element-wise multiplication.");
-    //     }
-    //     if (this->columns != other.columns) {
-    //         throw std::invalid_argument("Column sizes must match to perform matrix element-wise multiplication.");
-    //     }
-    //     Matrix return_matrix = Matrix(data, rows, columns);
-    //     for (int i = 0; i < columns; i++) {
-    //         return_matrix.data[i] *= other.data[i];
-    //     }
-    //     return return_matrix;
-    // }
-    // Matrix operator/(const Matrix& other) {
-    //     if (this->rows != other.rows) {
-    //         throw std::invalid_argument("Row sizes must match to perform matrix element-wise division.");
-    //     }
-    //     if (this->columns != other.columns) {
-    //         throw std::invalid_argument("Column sizes must match to perform matrix element-wise division.");
-    //     }
-    //     Matrix return_matrix = Matrix(data, rows, columns);
-    //     for (int i = 0; i < this->get_size(); i++) {
-    //         return_matrix.data[i] /= other.data[i];
-    //     }
-    //     return return_matrix;
-    // }
     Matrix& operator=(const Matrix& other) {
         if (this == &other) return *this;
         data = other.data;
