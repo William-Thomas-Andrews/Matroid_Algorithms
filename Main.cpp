@@ -38,13 +38,14 @@ int main() {
 
     std::cout << B3 << std::endl;
     row_reduce(B3);
-    std::cout << B3 << std::endl;
+
     // Vector v = Vector(std::vector<double>({}));
     // B3.add_element(v);
     std::cout << B3 << std::endl;
     std::cout << rank(B3) << std::endl;
     Vector v = Vector(std::vector<double>({0,0, 0, 0, 0, 1}));
     std::cout << B3.is_independent(v) << std::endl;
+    std::cout << "B3:" << B3.get_matrix_string() << std::endl;
     B3.add_element(v);
     std::cout << B3 << std::endl;
     // B3.switch_row(0, 8);

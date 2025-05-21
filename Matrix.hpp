@@ -385,14 +385,15 @@ public:
 
 
 void row_reduce(Matrix& A) {
-    if (A.data.empty()) {
-        return;
-    }
+    if (A.data.empty()) { return; }
     for (int col = 0, row = 0; col < A.columns; col++, row++) {
         if (row >= A.rows) { break; }
         int index = row;
-        while (A(index, col) == 0 and index < A.rows-1) { index++; }
+        while (A(index, col) == 0 and index < A.rows-1) { 
+            index++; 
+        }
         A.switch_row(row, index);
+        if (A(row, col) == 0) { continue; }
         A.multiply_row(row, (1 / A(row, col))); // Multiply the row by the inverse of its selected element
         for (int i = row+1; i < A.rows; i++) {
             if (A(i, col) != 0) {
@@ -408,19 +409,15 @@ int rank(Matrix& A) {
     //     row_reduce(A);
     //     st
     // }
-    // This function broke boa
     int rank = 0;
     for (int row = 0; row < A.rows; row++) {
         for (int col = 0; col < A.columns; col++) {
             if (A(row, col) != 0) {
-                // std::cout << row << " " << col << std::endl;
-                std::cout << A(row, col) << std::endl;
                 rank++;
                 break;
             }
         }
     }
-    std::cout << "rank" << rank << std::endl;
     return rank;
 }
 
