@@ -57,4 +57,39 @@ int main() {
     // std::cout << B3 << std::endl;
     // Matrix B4 = B.Transpose();
     // std::cout << B4 << std::endl;
+    Matrix C = Matrix(6, 10);
+    row_reduce(C);
+    std::cout << C << std::endl;
+    Matroid M2 = Matroid<Matrix, Vector>(C);
+    Matrix F = M2.optimize_matroid();
+    std::cout << F << std::endl;
+    std::cout << F(1).get_string() << std::endl;
+    std::cout << F(1).is_zero() << std::endl;
+    std::cout << C << std::endl;
+    // C.insertion_sort();
+    // std::cout << C << std::endl;
+    // // C.update_zeros();
+    // C.reset_weights();
+    // for (auto v : C.get_data()) {
+    //     std::cout << v.get_weight() << std::endl;
+    // }
+
+    
+    std::cout << C.get_data()[0].dim() << std::endl;
+    std::cout << (*(C.get_data().begin()+1)).get_weight() << std::endl;
+    std::cout << (*(C.get_data().begin()+1)) << std::endl;
+    std::cout << typeid(*(C.get_data().end())).name() << std::endl;
+    for (auto v : C.get_data()) {
+        std::cout << v.get_weight() << std::endl;
+    }
+    C.insertion_sort();
+    std::cout << C << std::endl;
+    for (auto v : C.get_data()) {
+        std::cout << v.get_weight() << std::endl;
+    }
+    // auto e =std::max_element(C.get_data().begin(), C.get_data().end(), MaxCompare<Vector>());
+    // std::cout << *e;
+    // Vector t = Vector({1, 2, 3});
+    // Vector p = Vector({0, 1, 1});
+    // std::cout << (t > p) << std::endl;
 }

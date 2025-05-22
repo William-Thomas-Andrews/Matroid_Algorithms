@@ -1,6 +1,8 @@
 #include <random>
 #include <iostream>
 #include "Vector.hpp"
+#include "Compare.hpp"
+#include <iomanip>
 
 
 class Matrix {
@@ -35,7 +37,7 @@ public:
         }
         row_reduce(*this);
     }
-    Matrix(const std::vector<Vector> input_data, int r, int c) : rows(r), columns(c) { 
+    Matrix(std::vector<Vector> input_data, int r, int c) : rows(r), columns(c) { 
         if (input_data.size() != c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
         for (int i = 0; i < c; i++) {
             data.push_back(Vector());
@@ -88,7 +90,21 @@ public:
 
     void print() { std::cout << get_matrix_string(); }
 
+    void update_zeros() {
+        for (int col = 0; col < columns; col++) {
+            while (data[col].dim() < rows) {
+                data[col].add(0.0);
+            }
+            while (data[col].dim() > rows) {
+                if (data[col].get_element(data[col].dim()-1) != 0) { std::cout << this->get_matrix_string() << std::endl; std::cout << rows << std::endl;
+                    throw std::invalid_argument("Vector has a longer size than the matrix dimension"); }
+                data[col].remove_back();
+            }
+        }
+    }
+
     void add_element(Vector v) {
+        if (v.is_zero()) { return; }
         if (rows > v.dim()) {
             while (v.dim() < rows) {
                 v.add(0);
@@ -99,6 +115,24 @@ public:
         }
         data.push_back(v);
         columns++;
+        update_zeros();
+    }
+
+    void remove_back() {
+        if (rows == 0 or columns == 0) { throw std::invalid_argument("Cannot remove the last vector from an empty matrix"); }
+        data.pop_back();
+        columns--;
+        update_zeros();
+    }
+
+    void swap_vectors(Vector& v1, Vector& v2) {
+        Vector temp = v2;
+        for (int i = 0; i < v2.dim(); i++) {
+            v1[i] = v2[i];
+        }
+        for (int j = 0; j < temp.dim(); j++) {
+            v2[j] = temp[j];
+        }
     }
 
     // void extend_vector(int col_index, double val) {
@@ -119,27 +153,27 @@ public:
             throw std::out_of_range("Column index cannot be negative");
         }
         Vector return_vector = {};
-        for (int i = 0; i < columns; i++) {
+        for (int i = 0; i < rows; i++) {
             return_vector.add(data[col_index][i]);
         }
         return return_vector;
     }
+    // double& operator()(int row_index, int col_index) { // Index operator, returns an entry in the matrix
+    //     if (rows <= row_index) {
+    //         throw std::out_of_range("Row index out of range");
+    //     }
+    //     if (0 > row_index) {
+    //         throw std::out_of_range("Row index cannot be negative");
+    //     }
+    //     if (columns <= col_index) {
+    //         throw std::out_of_range("Column index out of range");
+    //     }
+    //     if (0 > col_index) {
+    //         throw std::out_of_range("Column index cannot be negative");
+    //     }
+    //     return data[col_index][row_index];
+    // }
     double& operator()(int row_index, int col_index) { // Index operator, returns an entry in the matrix
-        if (rows <= row_index) {
-            throw std::out_of_range("Row index out of range");
-        }
-        if (0 > row_index) {
-            throw std::out_of_range("Row index cannot be negative");
-        }
-        if (columns <= col_index) {
-            throw std::out_of_range("Column index out of range");
-        }
-        if (0 > col_index) {
-            throw std::out_of_range("Column index cannot be negative");
-        }
-        return data[col_index][row_index];
-    }
-    const double& operator()(int row_index, int col_index) const { // Index operator, returns an entry in the matrix
         if (rows <= row_index) {
             throw std::out_of_range("Row index out of range");
             exit(1);
@@ -186,7 +220,7 @@ public:
         }
         return return_matrix;
     }
-    Matrix operator*(double scalar) {
+    Matrix& operator*(double scalar) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 this->get_element(i, j) *= scalar;
@@ -194,7 +228,7 @@ public:
         }
         return *this;
     }
-    Matrix operator/(double scalar) {
+    Matrix& operator/(double scalar) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 this->get_element(i, j) /= scalar;
@@ -271,18 +305,28 @@ public:
                     str.append(std::to_string(this->get_element(i, j)) + " ");
                 }
             }
-            str.append("]\n");
+            if (i != rows-1) {
+                str.append("]\n");
+            }
+            else {
+                str.append("]");
+            }
         }
         return str;
     }
-    std::string get_trucated_matrix_string() { // a copy of the data in a string format (originally arithmetic data)
+    std::string get_truncated_matrix_string() { // a copy of the data in a string format (originally arithmetic data)
         std::string str = "";
         for (int i = 0; i < rows; i++) {
             str.append("[ ");
             for (int j = 0; j < columns; j++) {
                 str.append(std::to_string(static_cast<int>(this->get_element(i, j))) + " ");
             }
-            str.append("]\n");
+            if (i != rows-1) {
+                str.append("]\n");
+            }
+            else {
+                str.append("]");
+            }
         }
         return str;
     }
@@ -319,6 +363,71 @@ public:
         return B;
     }
 
+    void reset_weights() {
+        for (int col = 0; col < columns; col++) {
+            double sum = 0;
+            for (int row = 0; row < rows; row++) {
+                sum += this->get_element(row, col);
+            }
+            data[col].set_weight(sum);
+        }
+    }
+
+    void min_sort() {
+        reset_weights();
+        std::sort(data.begin(), data.end(), MinCompare<Vector>());
+    }
+
+    void max_sort() {
+        reset_weights();
+        std::cout << "befor sort: \n" << "this->get_truncated_matrix_string()" << std::endl << std::endl;
+        for (auto v : data) {
+            // std::cout << v <<  std::endl;
+            std::cout << std::fixed << std::setprecision(5) << v.get_weight() << std::endl;
+        }
+        std::sort(data.begin(), data.end(), MaxCompare<Vector>{});
+        reset_weights();
+        std::cout << "after sort: \n" << "this->get_truncated_matrix_string()" << std::endl << std::endl;
+        for (auto v : data) {
+            std::cout << v.get_weight() << std::endl;
+        }
+    }
+    void insertion_sort() {
+        reset_weights();
+        // int n = data.size();
+        for (int i = 1; i < data.size(); ++i) {
+            Vector key = data[i];
+            std::cout << key.get_weight() << " " << data[i-1].get_weight() << std::endl;
+            int j = i - 1;
+            while (j >= 0 && data[j] > key) {
+                std::cout << data[j].get_weight() << " \n" << std::endl;
+                data[j + 1] = data[j];
+                // swap_vectors(data[j+1], data[j]);
+                j = j - 1;
+            }
+            data[j + 1] = key;
+            // swap_vectors(data[j+1], key);
+        }
+    } /// WORKING!!!
+
+
+
+
+    bool not_empty() {
+        if (rows != 0 and columns != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    Vector& top() {
+        return data[data.size()-1];
+    }
+
+    void pop() {
+        remove_back();
+    }
+
     bool is_independent(Vector& v) {
         // First to check if it is the zero vector
         int count = 0;
@@ -329,7 +438,6 @@ public:
         Matrix A = *this;
         A.add_element(v);
         row_reduce(A);
-        std::cout << rank(A) << " " << rank(*this) << std::endl;
         if (rank(A) == rank(*this)) {
             return false;
         } 
@@ -389,6 +497,8 @@ void row_reduce(Matrix& A) {
         }
     }
     A.is_row_reduced = true;
+    A.reset_weights();
+    A.update_zeros();
 }
 
 int rank(Matrix& A) {
@@ -410,7 +520,7 @@ int rank(Matrix& A) {
 
 
 std::ostream& operator<<(std::ostream& os, Matrix& A) {
-    os << A.get_trucated_matrix_string();
-    // os << A.get_matrix_string();
+    // os << A.get_truncated_matrix_string();
+    os << A.get_matrix_string();
     return os;
 }

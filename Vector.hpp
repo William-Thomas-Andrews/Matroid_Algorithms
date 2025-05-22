@@ -5,17 +5,25 @@
 class Vector {
     private:
         std::vector<double> data;
-        int dimension;
+        // static int dimension;
+        double weight = 0;
 
     public:
-        Vector() : dimension(0), data({}) {}
-        Vector(std::vector<double> input) : dimension(input.size()), data(input) {}
-        Vector(int size, double element) : dimension(size), data(std::vector<double>(size, element)) {}
+        Vector() : data({}) {}
+        Vector(std::vector<double> input) : data(input) {
+            for (auto x : input) {
+                weight += x;
+            }
+        }
+        Vector(int size, double element) :  data(std::vector<double>(size, element)) {
+            weight += size * element;
+        }
         ~Vector() {}
 
         // Get Vector Dimension
         int dim() const {
-            return dimension;
+            // dimension = data.size();
+            return data.size();
         }
 
         // Get Vector Data
@@ -29,13 +37,46 @@ class Vector {
         // Get Vector String
         std::string get_string() {
             std::string str = "(";
-            for (int i = 0; i < dimension; i++) {
+            for (int i = 0; i < data.size(); i++) {
                 str.append(std::to_string(data[i]));
-                if (i == dimension - 1) continue;
+                if (i == data.size() - 1) continue;
                 str.append(", ");
             }
             str.append(")");
             return str;
+        }
+
+        double get_element(int index) {
+            return data[index];
+        }
+
+        void remove_back() {
+            data.pop_back();
+        }
+
+        bool is_zero() {
+            std::cout << data.size() << std::endl;
+            std::cout << this->get_string() << std::endl;
+            for (int i = 0; i < data.size(); i++) {
+                std::cout << data.size() << std::endl;
+                if (data[i] != 0 or data[i] != (-0)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        double get_weight() {
+            // return weight;
+            double sum = 0;
+            for (int row = 0; row < data.size(); row++) {
+                sum += this->get_element(row);
+            }
+            return sum;
+        }
+
+        void set_weight(double& val) {
+            weight = val;
         }
 
         // Element Accessor []
@@ -43,27 +84,31 @@ class Vector {
             return data[index];
         }
 
-        // Element Accessor []
-        const double& operator[](int index) const {
-            return data[index];
-        }
+        // // Element Accessor []
+        // const double& operator[](int index) const {
+        //     return data[index];
+        // }
 
         // Equal Operator
         bool operator==(const Vector& other) {
-            if (this->dimension != other.dimension) {
+            if (this->data.size() != other.data.size()) {
                 return false;
             }
-            for (int i = 0; i < other.dim(); i++) {
-                if (this->data[i] != other.data[i]) {
-                    return false;
-                }
+            // for (int i = 0; i < other.dim(); i++) {
+            //     if (this->data[i] != other.data[i]) {
+            //         return false;
+            //     }
+            // }
+            if (weight == other.weight) {
+                return true;
             }
-            return true;
+            return false;
+            // return true;
         }
 
         // Not Equal Operator
         bool operator!=(const Vector& other) {
-            if (this->dimension != other.dimension) {
+            if (this->data.size() != other.data.size()) {
                 return false;
             }
             int count = 0;
@@ -78,25 +123,26 @@ class Vector {
         // Assignment Operator
         void operator=(const Vector& other) {
             if (this == &other) return;
-            for (int i = 0; i < this->dimension; i++) {
+            for (int i = 0; i < this->data.size(); i++) {
                 this->data[i] = other.data[i];
             }
-            for (int j = this->dimension; j < other.dim(); j++) {
+            for (int j = this->data.size(); j < other.dim(); j++) {
                 this->data.push_back(other.data[j]);
             }
-            this->dimension = other.dimension;
+            // this->data.size() = other.data.size();
         }
 
         // Add Element
         void add(double element) {
             data.push_back(element);
-            dimension++;
+            weight += element;
+            // data.size()++;
         }
 
         // Cumulative Vector Addition +=
         Vector operator+=(Vector& v2) {
-            if (this->dimension < v2.dimension) { throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition."); }
-            for (int i = 0; i < v2.dimension; i++) {
+            if (this->data.size() < v2.data.size()) { throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition."); }
+            for (int i = 0; i < v2.data.size(); i++) {
                 this->data[i] += v2.data[i];
             }
             return *this;
@@ -104,11 +150,27 @@ class Vector {
 
         // Cumulative Vector Subtraction -=
         Vector operator-=(Vector& v2) {
-            if (this->dimension < v2.dimension) { throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition."); }
-            for (int i = 0; i < v2.dimension; i++) {
+            if (this->data.size() < v2.data.size()) { throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition."); }
+            for (int i = 0; i < v2.data.size(); i++) {
                 this->data[i] -= v2.data[i];
             }
             return *this;
+        }
+
+        // Comparison operator <
+        bool operator<(Vector& v2) {
+            if (this->get_weight() < v2.get_weight()) {
+                return true;
+            }
+            return false;
+        }
+
+        // Comparison operator >
+        bool operator>(Vector& v2) {
+            if (this->get_weight() > v2.get_weight()) {
+                return true;
+            }
+            return false;
         }
 
         // Vector Addition
@@ -126,20 +188,20 @@ class Vector {
 // Vector Addition +
 Vector operator+(Vector& v1, Vector& v2) {
     std::vector<double> result;
-    if (v1.dimension == v2.dimension) {
-        Vector result = Vector(std::vector<double>(v1.dimension, 0));
-        for (int i = 0; i < v1.dimension; i++) {
+    if (v1.data.size() == v2.data.size()) {
+        Vector result = Vector(std::vector<double>(v1.data.size(), 0));
+        for (int i = 0; i < v1.data.size(); i++) {
             result[i] += v1[i] + v2[i];
         }
     }
     else {
-        int size = std::max(v1.dimension, v2.dimension);
+        int size = std::max(v1.data.size(), v2.data.size());
         Vector result = Vector(std::vector<double>(size, 0));
         // TODO optimize
-        for (int i = 0; i < v1.dimension; i++) {
+        for (int i = 0; i < v1.data.size(); i++) {
             result[i] += v1[i];
         }
-        for (int j = 0; j < v2.dimension; j++) {
+        for (int j = 0; j < v2.data.size(); j++) {
             result[j] += v2[j];
         }
     }
@@ -151,20 +213,20 @@ Vector operator+(Vector& v1, Vector& v2) {
 // Vector Subtraction -
 Vector operator-(Vector& v1, Vector& v2) {
     std::vector<double> result;
-    if (v1.dimension == v2.dimension) {
-        Vector result = Vector(std::vector<double>(v1.dimension, 0));
-        for (int i = 0; i < v1.dimension; i++) {
+    if (v1.data.size() == v2.data.size()) {
+        Vector result = Vector(std::vector<double>(v1.data.size(), 0));
+        for (int i = 0; i < v1.data.size(); i++) {
             result[i] += v1[i] - v2[i];
         }
     }
     else {
-        int size = std::max(v1.dimension, v2.dimension);
+        int size = std::max(v1.data.size(), v2.data.size());
         Vector result = Vector(std::vector<double>(size, 0));
         // TODO optimize
-        for (int i = 0; i < v1.dimension; i++) {
+        for (int i = 0; i < v1.data.size(); i++) {
             result[i] += v1[i];
         }
-        for (int j = 0; j < v2.dimension; j++) {
+        for (int j = 0; j < v2.data.size(); j++) {
             result[j] -= v2[j];
         }
     }
