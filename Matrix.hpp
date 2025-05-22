@@ -29,33 +29,33 @@ public:
                 data[col].add(dis(gen));
             }
         }
-        // row_reduce(*this);
+        // row_reduce(*this); // Can be enabled for auto row-reduction
     }
     Matrix(double item, int r, int c) : rows(r), columns(c) { // Uniform data
         for (int i = 0; i < c; i++) {
             data.push_back(Vector(r, item));
         }
-        row_reduce(*this);
+        // row_reduce(*this); // Can be enabled for auto row-reduction
     }
     Matrix(std::vector<Vector> input_data, int r, int c) : rows(r), columns(c) { 
-        if (input_data.size() != c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
+        if (input_data.size() != c) throw std::invalid_argument("Size of array does not match dimension sizes.");
         for (int i = 0; i < c; i++) {
             data.push_back(Vector());
             for (int j = 0; j < input_data[i].dim(); j++) {
                 data[i].add(input_data[i][j]);
             }
         } 
-        row_reduce(*this);
+        // row_reduce(*this); // Can be enabled for auto row-reduction
     }
     Matrix(const std::vector<std::vector<double>> input_data, int r, int c) : rows(r), columns(c) { 
-        if (input_data.size() != c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
+        if (input_data.size() != c) throw std::invalid_argument("Size of array does not match dimension sizes.");
         for (int i = 0; i < c; i++) {
             data.push_back(Vector());
             for (int j = 0; j < input_data[i].size(); j++) {
                 data[i].add(input_data[i][j]);
             }
         } 
-        row_reduce(*this);
+        // row_reduce(*this); // Can be enabled for auto row-reduction
     }
     // // Reads column wise. TODO change to also be able to read row wise.
     // Matrix(const std::vector<double> input_data, int r, int c) : rows(r), columns(c) {
@@ -83,7 +83,7 @@ public:
     // TODO std::array input
     // Copy Constructor
     Matrix(const Matrix& A) : rows(A.rows), columns(A.columns), data(A.data) {
-        row_reduce(*this);
+        // row_reduce(*this); // Can be enabled for auto row-reduction
     }
     // Destructor
     ~Matrix() {}
@@ -96,15 +96,14 @@ public:
                 data[col].add(0.0);
             }
             while (data[col].dim() > rows) {
-                if (data[col].get_element(data[col].dim()-1) != 0) { std::cout << this->get_matrix_string() << std::endl; std::cout << rows << std::endl;
-                    throw std::invalid_argument("Vector has a longer size than the matrix dimension"); }
+                if (data[col].get_element(data[col].dim()-1) != 0) throw std::invalid_argument("Vector has a longer size than the matrix dimension"); 
                 data[col].remove_back();
             }
         }
     }
 
     void add_element(Vector v) {
-        if (v.is_zero()) { return; }
+        if (v.is_zero()) return;
         if (rows > v.dim()) {
             while (v.dim() < rows) {
                 v.add(0);
@@ -116,10 +115,11 @@ public:
         data.push_back(v);
         columns++;
         update_zeros();
+        is_row_reduced = false;
     }
 
     void remove_back() {
-        if (rows == 0 or columns == 0) { throw std::invalid_argument("Cannot remove the last vector from an empty matrix"); }
+        if (rows == 0 or columns == 0) throw std::invalid_argument("Cannot remove the last vector from an empty matrix");
         data.pop_back();
         columns--;
         update_zeros();
@@ -176,29 +176,23 @@ public:
     double& operator()(int row_index, int col_index) { // Index operator, returns an entry in the matrix
         if (rows <= row_index) {
             throw std::out_of_range("Row index out of range");
-            exit(1);
         }
         if (0 > row_index) {
             throw std::out_of_range("Row index cannot be negative");
-            exit(1);
         }
         if (columns <= col_index) {
             throw std::out_of_range("Column index out of range");
-            exit(1);
         }
-        if (0 > col_index) {
+        if (0 > col_index) { 
             throw std::out_of_range("Column index cannot be negative");
-            exit(1);
         }
-        // return data[(row_index * columns) + col_index];
         return data[col_index][row_index];
     }
-    // TODO: Fix below
     Matrix operator+(Matrix& other) {
-        if (this->rows != other.rows) {
+        if (this->rows != other.rows) { 
             throw std::invalid_argument("Row sizes must match to perform matrix element-wise addition.");
         }
-        if (this->columns != other.columns) {
+        if (this->columns != other.columns) { 
             throw std::invalid_argument("Column sizes must match to perform matrix element-wise addition.");
         }
         Matrix return_matrix = Matrix(data, rows, columns);
@@ -275,7 +269,7 @@ public:
     // Gettrs
     int get_size() const { return data.size(); }
 
-    std::vector<Vector> get_data() const { // a copy of the data
+    std::vector<Vector> get_data() { // a copy of the data
         std::vector<Vector> vec({});
         for (int i = 0; i < get_size(); i++) {
             vec.push_back(data[i]);
@@ -294,6 +288,7 @@ public:
         return str;
     }
     std::string get_matrix_string() { // a copy of the data in a string format (originally arithmetic data)
+        if (rows == 0 or columns == 0) return "[]";
         std::string str = "";
         for (int i = 0; i < rows; i++) {
             str.append("[ ");
@@ -315,6 +310,7 @@ public:
         return str;
     }
     std::string get_truncated_matrix_string() { // a copy of the data in a string format (originally arithmetic data)
+        if (rows == 0 or columns == 0) return "[]";
         std::string str = "";
         for (int i = 0; i < rows; i++) {
             str.append("[ ");
@@ -363,60 +359,28 @@ public:
         return B;
     }
 
-    void reset_weights() {
-        for (int col = 0; col < columns; col++) {
-            double sum = 0;
-            for (int row = 0; row < rows; row++) {
-                sum += this->get_element(row, col);
-            }
-            data[col].set_weight(sum);
-        }
-    }
-
     void min_sort() {
-        reset_weights();
         std::sort(data.begin(), data.end(), MinCompare<Vector>());
     }
 
     void max_sort() {
-        reset_weights();
-        std::cout << "befor sort: \n" << "this->get_truncated_matrix_string()" << std::endl << std::endl;
-        for (auto v : data) {
-            // std::cout << v <<  std::endl;
-            std::cout << std::fixed << std::setprecision(5) << v.get_weight() << std::endl;
-        }
-        std::sort(data.begin(), data.end(), MaxCompare<Vector>{});
-        reset_weights();
-        std::cout << "after sort: \n" << "this->get_truncated_matrix_string()" << std::endl << std::endl;
-        for (auto v : data) {
-            std::cout << v.get_weight() << std::endl;
-        }
+        std::sort(data.begin(), data.end(), MaxCompare<Vector>());
     }
+
     void insertion_sort() {
-        reset_weights();
-        // int n = data.size();
         for (int i = 1; i < data.size(); ++i) {
             Vector key = data[i];
-            std::cout << key.get_weight() << " " << data[i-1].get_weight() << std::endl;
             int j = i - 1;
             while (j >= 0 && data[j] > key) {
-                std::cout << data[j].get_weight() << " \n" << std::endl;
                 data[j + 1] = data[j];
-                // swap_vectors(data[j+1], data[j]);
                 j = j - 1;
             }
             data[j + 1] = key;
-            // swap_vectors(data[j+1], key);
         }
-    } /// WORKING!!!
-
-
-
+    }
 
     bool not_empty() {
-        if (rows != 0 and columns != 0) {
-            return true;
-        }
+        if (rows != 0 and columns != 0) return true;
         return false;
     }
 
@@ -430,11 +394,7 @@ public:
 
     bool is_independent(Vector& v) {
         // First to check if it is the zero vector
-        int count = 0;
-        for (auto x : v.get_data()) {
-            if (x == 0) count++;
-        }
-        if (count == v.dim()) return false; // If yes, then it returns false because adding the zero vector makes the matrix linearly dependent
+        if (v.is_zero()) return false; // If yes, then it returns false because adding the zero vector makes the matrix linearly dependent
         Matrix A = *this;
         A.add_element(v);
         row_reduce(A);
@@ -450,18 +410,21 @@ public:
             this->get_element(row1, col) = this->get_element(row2, col);
             this->get_element(row2, col) = temp;
         }
+        is_row_reduced = false;
     }
 
     void multiply_row(int row, double scalar) {
         for (int col = 0; col < columns; col++) {
             this->get_element(row, col) = this->get_element(row, col) * scalar;
         }
+        is_row_reduced = false;
     }
 
     void row_replacement(int root_row, int replacee, double scalar) {
         for (int col = 0; col < columns; col++) {
             this->get_element(replacee, col) = this->get_element(replacee, col) + this->get_element(root_row, col) * scalar;
         }
+        is_row_reduced = false;
     }
 
     friend void row_reduce(Matrix& A);
@@ -480,15 +443,15 @@ public:
 
 
 void row_reduce(Matrix& A) {
-    if (A.data.empty()) { return; }
+    if (A.data.empty()) return; 
     for (int col = 0, row = 0; col < A.columns; col++, row++) {
-        if (row >= A.rows) { break; }
+        if (row >= A.rows) break; 
         int index = row;
         while (A(index, col) == 0 and index < A.rows-1) { 
             index++; 
         }
         A.switch_row(row, index);
-        if (A(row, col) == 0) { continue; }
+        if (A(row, col) == 0) continue;
         A.multiply_row(row, (1 / A(row, col))); // Multiply the row by the inverse of its selected element
         for (int i = row+1; i < A.rows; i++) {
             if (A(i, col) != 0) {
@@ -497,7 +460,6 @@ void row_reduce(Matrix& A) {
         }
     }
     A.is_row_reduced = true;
-    A.reset_weights();
     A.update_zeros();
 }
 

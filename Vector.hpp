@@ -5,7 +5,6 @@
 class Vector {
     private:
         std::vector<double> data;
-        // static int dimension;
         double weight = 0;
 
     public:
@@ -22,7 +21,6 @@ class Vector {
 
         // Get Vector Dimension
         int dim() const {
-            // dimension = data.size();
             return data.size();
         }
 
@@ -55,10 +53,7 @@ class Vector {
         }
 
         bool is_zero() {
-            std::cout << data.size() << std::endl;
-            std::cout << this->get_string() << std::endl;
             for (int i = 0; i < data.size(); i++) {
-                std::cout << data.size() << std::endl;
                 if (data[i] != 0 or data[i] != (-0)) {
                     return false;
                 }
@@ -67,7 +62,6 @@ class Vector {
         }
 
         double get_weight() {
-            // return weight;
             double sum = 0;
             for (int row = 0; row < data.size(); row++) {
                 sum += this->get_element(row);
@@ -75,42 +69,25 @@ class Vector {
             return sum;
         }
 
-        void set_weight(double& val) {
-            weight = val;
-        }
-
         // Element Accessor []
         double& operator[](int index) {
             return data[index];
         }
 
-        // // Element Accessor []
-        // const double& operator[](int index) const {
-        //     return data[index];
-        // }
-
         // Equal Operator
-        bool operator==(const Vector& other) {
+        bool operator==(Vector& other) {
             if (this->data.size() != other.data.size()) {
                 return false;
             }
-            // for (int i = 0; i < other.dim(); i++) {
-            //     if (this->data[i] != other.data[i]) {
-            //         return false;
-            //     }
-            // }
-            if (weight == other.weight) {
+            if (this->get_weight() == other.get_weight()) {
                 return true;
             }
             return false;
-            // return true;
         }
 
         // Not Equal Operator
         bool operator!=(const Vector& other) {
-            if (this->data.size() != other.data.size()) {
-                return false;
-            }
+            if (this->data.size() != other.data.size()) return false;
             int count = 0;
             for (int i = 0; i < other.dim(); i++) {
                 if (this->data[i] == other.data[i]) {
@@ -129,19 +106,17 @@ class Vector {
             for (int j = this->data.size(); j < other.dim(); j++) {
                 this->data.push_back(other.data[j]);
             }
-            // this->data.size() = other.data.size();
         }
 
         // Add Element
         void add(double element) {
             data.push_back(element);
             weight += element;
-            // data.size()++;
         }
 
         // Cumulative Vector Addition +=
         Vector operator+=(Vector& v2) {
-            if (this->data.size() < v2.data.size()) { throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition."); }
+            if (this->data.size() < v2.data.size()) throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition.");
             for (int i = 0; i < v2.data.size(); i++) {
                 this->data[i] += v2.data[i];
             }
@@ -150,7 +125,7 @@ class Vector {
 
         // Cumulative Vector Subtraction -=
         Vector operator-=(Vector& v2) {
-            if (this->data.size() < v2.data.size()) { throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition."); }
+            if (this->data.size() < v2.data.size()) throw std::invalid_argument("Vector 1 size cannot be smaller than Vector 2 size for cumulative addition.");
             for (int i = 0; i < v2.data.size(); i++) {
                 this->data[i] -= v2.data[i];
             }
