@@ -494,7 +494,6 @@ void row_reduce(Matrix& A) {
 
 int rank(Matrix& A) {
     Matrix B = Matrix(A);
-    // std::cout << B.get_truncated_matrix_string() << std::endl;
     row_reduce(B);
     int rank = 0;
     int col_start = 0;
