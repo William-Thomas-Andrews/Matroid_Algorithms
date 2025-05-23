@@ -48,16 +48,39 @@ public:
         // row_reduce(*this); // Can be enabled for auto row-reduction
     }
     Matrix(const std::vector<std::vector<double>> input_data, int r, int c) : rows(r), columns(c) { 
-        if (input_data.size() != c) throw std::invalid_argument("Size of array does not match dimension sizes.");
-        for (int i = 0; i < c; i++) {
-            data.push_back(Vector());
-            for (int j = 0; j < input_data[i].size(); j++) {
-                data[i].add(input_data[i][j]);
-            }
-        } 
+        // Reads each nested vector as a vector
+        if (input_data.size() != c) throw std::invalid_argument("Number of columns of array does not match dimension sizes.");
+            for (int col = 0; col < c; col++) {
+                if (input_data[col].size() != r) throw std::invalid_argument("Number of rows of array does not match dimension sizes.");
+                data.push_back(Vector());
+                for (int row = 0; row < r; row++) {
+                    data[col].add(input_data[col][row]);
+                }
+            } 
         // row_reduce(*this); // Can be enabled for auto row-reduction
     }
-    // // Reads column wise. TODO change to also be able to read row wise.
+    Matrix(const std::vector<std::vector<double>> input_data, int r, int c, bool by_column) : rows(r), columns(c) { 
+        if (by_column) {
+            if (input_data.size() != c) throw std::invalid_argument("Number of columns of array does not match dimension sizes.");
+            for (int col = 0; col < c; col++) {
+                if (input_data[col].size() != r) throw std::invalid_argument("Number of rows of array does not match dimension sizes.");
+                data.push_back(Vector());
+                for (int row = 0; row < r; row++) {
+                    data[col].add(input_data[col][row]);
+                }
+            } 
+            return;
+        }
+        if (input_data.size() != r) throw std::invalid_argument("Number of rows of array does not match dimension sizes.");
+        for (int col = 0; col < c; col++) {
+            data.push_back(Vector());
+            for (int row = 0; row < r; row++) {
+                if (input_data[row].size() != c) throw std::invalid_argument("Number of columns of array does not match dimension sizes.");
+                data[col].add(input_data[row][col]);
+            }
+        }
+        // row_reduce(*this); // Can be enabled for auto row-reduction
+    }
     // Matrix(const std::vector<double> input_data, int r, int c) : rows(r), columns(c) {
     //     if (input_data.size() != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
     //     int index = 0;
@@ -208,27 +231,29 @@ public:
         if (this->columns != other.columns) {
             throw std::invalid_argument("Column sizes must match to perform matrix element-wise subtraction.");
         }
-        Matrix return_matrix = Matrix(data, this->rows, this->columns);
+        Matrix result = Matrix(data, this->rows, this->columns);
         for (int i = 0; i < this->get_size(); i++) {
-            return_matrix.data[i] -= other.data[i];
+            result.data[i] -= other.data[i];
         }
-        return return_matrix;
+        return result;
     }
-    Matrix& operator*(double scalar) {
+    Matrix operator*(double scalar) {
+        Matrix result = Matrix(data, this->rows, this->columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                this->get_element(i, j) *= scalar;
+                result(i, j) *= scalar;
             }
         }
-        return *this;
+        return result;
     }
-    Matrix& operator/(double scalar) {
+    Matrix operator/(double scalar) {
+        Matrix result = Matrix(data, this->rows, this->columns);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                this->get_element(i, j) /= scalar;
+                result(i, j) /= scalar;
             }
         }
-        return *this;
+        return result;
     }
     Matrix& operator=(const Matrix& other) {
         if (this == &other) return *this;
@@ -398,7 +423,11 @@ public:
         Matrix A = *this;
         A.add_element(v);
         row_reduce(A);
-        if (rank(A) == rank(*this)) {
+        int rank_A = rank(A);
+        int rank_this = rank(*this);
+        // std::cout << rank_A << std::endl;
+        // std::cout << rank_this << std::endl;
+        if (rank_A == rank_this) {
             return false;
         } 
         return true;
@@ -464,25 +493,28 @@ void row_reduce(Matrix& A) {
 }
 
 int rank(Matrix& A) {
-    // if (A.is_row_reduced == false) {
-    //     row_reduce(A);
-    //     st
-    // }
+    Matrix B = Matrix(A);
+    // std::cout << B.get_truncated_matrix_string() << std::endl;
+    row_reduce(B);
     int rank = 0;
-    for (int row = 0; row < A.rows; row++) {
-        for (int col = 0; col < A.columns; col++) {
-            if (A(row, col) != 0) {
+    int col_start = 0;
+    for (int row = 0; row < B.rows; row++) {
+        for (int col = col_start; col < B.columns; col++) {
+            if ((B(row, col) != 0.0) or (B(row, col) != (-0.0))) {
                 rank++;
+                col_start++;
                 break;
             }
         }
     }
+    // std::cout << B.get_truncated_matrix_string() << std::endl << std::endl;
     return rank;
 }
 
 
 std::ostream& operator<<(std::ostream& os, Matrix& A) {
-    // os << A.get_truncated_matrix_string();
-    os << A.get_matrix_string();
+    // std::string str = A.get_truncated_matrix_string();
+    std::string str = A.get_matrix_string();
+    os << str;
     return os;
 }
