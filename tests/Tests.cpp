@@ -256,4 +256,6 @@ int main() {
     std::cout << "Reduced:\n" << basis4 << "\n";
     std::cout << "Rank: " << rank(basis4) << "\n\n";
 
+
+    
 }

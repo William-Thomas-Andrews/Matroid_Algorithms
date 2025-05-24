@@ -1,5 +1,6 @@
 #include "VectorSpace.hpp"
-#include "Graph.hpp"
+// #include "Graph.hpp"
+#include "BipartiteGraph.hpp"
 #include "Oracle.hpp"
 
 // SET being the type of input set, like Graph, or a Matrix
@@ -34,7 +35,7 @@ class Matroid {
             return solution_set;
         }
 
-        // TODO
+        // TODO Read More on Exchange Property
         ELEMENT matroid_exchange_property(Matroid& M){
 
         }

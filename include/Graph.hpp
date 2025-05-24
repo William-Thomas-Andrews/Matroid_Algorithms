@@ -10,6 +10,12 @@ class Edge {
         Vertex u;
         Weight weight;
     public:
+        Edge() {}
+        // Edge(Edge& e) {
+        //     v = e.get_left();
+        //     u = e.get_right();
+        //     weight = e.get_weight();
+        // }
         Edge(Vertex v1, Vertex v2, Weight w) : v(v1 > v2 ? v1 : v2), u(v1 > v2 ? v2 : v1), weight(w) {}
 
         std::string get_string() {
@@ -66,6 +72,13 @@ class Graph {
                 union_set.union_operation(e.get_left(), e.get_right());
             }
         }
+        Graph(std::vector<Edge> input_data) : union_set(UnionFind(input_data.size())) {
+            for (Edge e : input_data) {
+                // Edge e = Edge(std::get<0>(x), std::get<1>(x), std::get<2>(x));
+                this->add_element(e);
+                union_set.union_operation(e.get_left(), e.get_right());
+            }
+        }
 
         // Matroid functions begin --------------------------------------------------------------------------------------------------
         void min_sort() {
@@ -113,8 +126,7 @@ class Graph {
         std::string get_string() {
             std::string str = "";
             for (auto edge : edges) {
-                str += edge.get_string();
-                str += " ";
+                str += edge.get_string() + " ";
             }
             str += "\n";
             return str;

@@ -489,7 +489,6 @@ void row_reduce(Matrix& A) {
     A.update_zeros();
 }
 
-// Not working
 int no_reduce_rank(Matrix& A) {
     Matrix B = Matrix(A);
     // row_reduce(B);
@@ -509,7 +508,6 @@ int no_reduce_rank(Matrix& A) {
     return rank;
 }
 
-// Not working
 int rank(Matrix& A) {
     Matrix B = Matrix(A);
     row_reduce(B);
