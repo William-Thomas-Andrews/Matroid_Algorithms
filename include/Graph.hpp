@@ -11,11 +11,6 @@ class Edge {
         Weight weight;
     public:
         Edge() {}
-        // Edge(Edge& e) {
-        //     v = e.get_left();
-        //     u = e.get_right();
-        //     weight = e.get_weight();
-        // }
         Edge(Vertex v1, Vertex v2, Weight w) : v(v1 > v2 ? v1 : v2), u(v1 > v2 ? v2 : v1), weight(w) {}
 
         std::string get_string() {
