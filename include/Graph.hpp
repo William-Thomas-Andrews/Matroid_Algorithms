@@ -51,7 +51,7 @@ std::ostream& operator<<(std::ostream& os, Edge& e) {
     return os;
 }
 
-
+// The input set for a Graphic Matroid
 class Graph {
     private:
         std::vector<Edge> edges;

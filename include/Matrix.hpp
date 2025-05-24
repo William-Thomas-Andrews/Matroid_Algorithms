@@ -1,10 +1,15 @@
-// #include <iostream>
-// #include <iomanip>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <random>
 #include "Vector.hpp"
 #include "Compare.hpp"
 
 
+const double EPS = 1e-10;
+
+
+// The input set for a Linear Matroid
 class Matrix {
 private:
     int rows;
@@ -80,7 +85,7 @@ public:
         }
         // row_reduce(*this); // Can be enabled for auto row-reduction
     }
-    
+
     // Copy Constructor
     Matrix(const Matrix& A) : rows(A.rows), columns(A.columns), data(A.data) {
         // row_reduce(*this); // Can be enabled for auto row-reduction
@@ -158,21 +163,6 @@ public:
         }
         return return_vector;
     }
-    // double& operator()(int row_index, int col_index) { // Index operator, returns an entry in the matrix
-    //     if (rows <= row_index) {
-    //         throw std::out_of_range("Row index out of range");
-    //     }
-    //     if (0 > row_index) {
-    //         throw std::out_of_range("Row index cannot be negative");
-    //     }
-    //     if (columns <= col_index) {
-    //         throw std::out_of_range("Column index out of range");
-    //     }
-    //     if (0 > col_index) {
-    //         throw std::out_of_range("Column index cannot be negative");
-    //     }
-    //     return data[col_index][row_index];
-    // }
     double& operator()(int row_index, int col_index) { // Index operator, returns an entry in the matrix
         if (rows <= row_index) {
             throw std::out_of_range("Row index out of range");
@@ -289,6 +279,12 @@ public:
         str.append(")");
         return str;
     }
+    std::string to_string_precise(double value, int precision = 5) {
+        std::ostringstream out;
+        out << std::fixed << std::setprecision(precision) << value;
+        return out.str();
+    }
+
     std::string get_matrix_string() { // a copy of the data in a string format (originally arithmetic data)
         if (rows == 0 or columns == 0) return "[]";
         std::string str = "";
@@ -299,7 +295,7 @@ public:
                     str.append(std::to_string(0.0) + " ");
                 }
                 else {
-                    str.append(std::to_string(this->get_element(i, j)) + " ");
+                    str.append(to_string_precise(this->get_element(i, j)) + " ");
                 }
             }
             if (i != rows-1) {
@@ -433,7 +429,9 @@ public:
         is_row_reduced = false;
     }
 
+    friend void full_double_round(Matrix& A);
     friend void row_reduce(Matrix& A);
+    friend int no_reduce_rank(Matrix& A);
     friend int rank(Matrix& A);
 
 
@@ -447,28 +445,71 @@ public:
     friend Matrix dot_fine_grained(const Matrix& A, const Matrix& B);
 };
 
+double double_round(double val) {
+    if (std::abs(val) < EPS) return 0;
+    return val;
+}
+
+void full_double_round(Matrix& A) {
+    for (int i = 0; i < A.rows; i++) {
+        for (int j = 0; j < A.columns; j++) {
+            A(i, j) = double_round(A(i, j));
+        }
+    }
+}
+
 
 void row_reduce(Matrix& A) {
     if (A.data.empty()) return; 
     for (int col = 0, row = 0; col < A.columns; col++, row++) {
+        // std::cout << A.get_matrix_string() << "after:\n";
         if (row >= A.rows) break; 
         int index = row;
         while (A(index, col) == 0 and index < A.rows-1) { 
             index++; 
         }
+        // std::cout << A(row, col) << std::endl;
+        A(row, col) = double_round(A(row, col));
         A.switch_row(row, index);
+        A(row, col) = double_round(A(row, col));
         if (A(row, col) == 0) continue;
+        full_double_round(A);
         A.multiply_row(row, (1 / A(row, col))); // Multiply the row by the inverse of its selected element
+        full_double_round(A);
         for (int i = row+1; i < A.rows; i++) {
             if (A(i, col) != 0) {
                 A.row_replacement(row, i, (-A(i, col)));
+                full_double_round(A);
             }
         }
+        // std::cout << A.get_matrix_string() << "\n" << no_reduce_rank(A) << "\n\n";
+    
     }
     A.is_row_reduced = true;
     A.update_zeros();
 }
 
+// Not working
+int no_reduce_rank(Matrix& A) {
+    Matrix B = Matrix(A);
+    // row_reduce(B);
+    int rank = 0;
+    int col_start = 0;
+    for (int row = 0; row < B.rows; row++) {
+        for (int col = col_start; col < B.columns; col++) {
+            if ((B(row, col) != 0.0) or (B(row, col) != (-0.0))) {
+                // std::cout << "Culprit: " << B(row, col) << std::endl;
+                rank++;
+                col_start++;
+                break;
+            }
+        }
+    }
+    // std::cout << B.get_truncated_matrix_string() << std::endl << std::endl;
+    return rank;
+}
+
+// Not working
 int rank(Matrix& A) {
     Matrix B = Matrix(A);
     row_reduce(B);

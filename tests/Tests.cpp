@@ -1,7 +1,10 @@
 #include "../include/Matroid.hpp"
 
 int main() {
-    std::cout << "Matrix Test 1:\n\n"; 
+
+    std::cout << "=== Small Matrix Test Suite ===\n\n";
+
+    std::cout << "Matrix Test:\n\n"; 
     Matrix A11(0, 0);  // Edge case
     Matrix A22(3, 3);
     Matrix A33(2, 5);
@@ -10,7 +13,7 @@ int main() {
     std::cout << A22 << std::endl << std::endl << std::endl;
 
 
-    std::cout << "Matrix Test 2:\n\n"; 
+    std::cout << "Matrix Test:\n\n"; 
     Matrix A(3, 4);
     Matrix T = A.Transpose().Transpose();
     std::cout << "Original:\n" << A << "\n\n Transposed:\n" << A.Transpose().get_matrix_string() << "\n\n";
@@ -22,7 +25,7 @@ int main() {
     A.multiply_row(2, 0.9);
     std::cout << A << "\n\n\n";
 
-    std::cout << "Matroid Test 1:\n\n";
+    std::cout << "Matroid Test:\n\n";
     row_reduce(A);
     std::cout << A << "\n\n";
     Matroid M = Matroid<Matrix, Vector>(A);
@@ -36,24 +39,24 @@ int main() {
 
     std::cout << "=== Row Reduction & Rank Test Suite ===\n\n";
 
-    // Test 1: Zero Matrix
-    std::cout << "Test 1: Zero Matrix\n";
+    // Test: Zero Matrix
+    std::cout << "Test: Zero Matrix\n";
     Matrix A1(std::vector<std::vector<double>>({{0, 0}, {0, 0}}), 2, 2);
     std::cout << "Original:\n" << A1 << "\n";
     row_reduce(A1);
     std::cout << "Reduced:\n" << A1 << "\n";
     std::cout << "Rank: " << rank(A1) << "\n\n";
 
-    // Test 2: Identity Matrix
-    std::cout << "Test 2: Identity Matrix\n";
+    // Test: Identity Matrix
+    std::cout << "Test: Identity Matrix\n";
     Matrix A2(std::vector<std::vector<double>>({{1, 0}, {0, 1}}), 2, 2);
     std::cout << "Original:\n" << A2 << "\n";
     row_reduce(A2);
     std::cout << "Reduced:\n" << A2 << "\n";
     std::cout << "Rank: " << rank(A2) << "\n\n";
 
-    // Test 3: Row Swaps Required
-    std::cout << "Test 3: Row Swaps\n";
+    // Test: Row Swaps Required
+    std::cout << "Test: Row Swaps\n";
     Matrix A3(std::vector<std::vector<double>>({
         {0, 2, 1},
         {1, 0, 0},
@@ -64,8 +67,8 @@ int main() {
     std::cout << "Reduced:\n" << A3 << "\n";
     std::cout << "Rank: " << rank(A3) << "\n\n";
 
-    // Test 4: Linearly Dependent Rows
-    std::cout << "Test 4: Duplicate Rows\n";
+    // Test: Linearly Dependent Rows
+    std::cout << "Test: Duplicate Rows\n";
     Matrix A4(std::vector<std::vector<double>>({
         {1, 2, 3},
         {1, 2, 3},
@@ -76,8 +79,8 @@ int main() {
     std::cout << "Reduced:\n" << A4 << "\n";
     std::cout << "Rank: " << rank(A4) << "\n\n";
 
-    // Test 5: Rectangular Tall Matrix
-    std::cout << "Test 5: More Rows than Columns\n";
+    // Test: Rectangular Tall Matrix
+    std::cout << "Test: More Rows than Columns\n";
     Matrix A5(std::vector<std::vector<double>>({
         {1, 2, 3},
         {4, 5, 6}
@@ -87,8 +90,8 @@ int main() {
     std::cout << "Reduced:\n" << A5 << "\n";
     std::cout << "Rank: " << rank(A5) << "\n\n";
 
-    // Test 6: Rectangular Wide Matrix
-    std::cout << "Test 6: More Columns than Rows\n";
+    // Test: Rectangular Wide Matrix
+    std::cout << "Test: More Columns than Rows\n";
     Matrix A51(std::vector<std::vector<double>>({
         {1, 2, 3},
         {4, 5, 6}
@@ -98,8 +101,8 @@ int main() {
     std::cout << "Reduced:\n" << A51 << "\n";
     std::cout << "Rank: " << rank(A51) << "\n\n";
 
-    // Test 7: Sparse Matrix
-    std::cout << "Test 7: Sparse Matrix\n";
+    // Test: Sparse Matrix
+    std::cout << "Test: Sparse Matrix\n";
     Matrix A6(std::vector<std::vector<double>>({
         {0, 0, 1, 0},
         {0, 0, 0, 0},
@@ -110,8 +113,8 @@ int main() {
     std::cout << "Reduced:\n" << A6 << "\n";
     std::cout << "Rank: " << rank(A6) << "\n\n";
 
-    // Test 8: Single Row
-    std::cout << "Test 8: Single Row\n";
+    // Test: Single Row
+    std::cout << "Test: Single Row\n";
     Matrix A7(std::vector<std::vector<double>>({
         {3, 4, 5}
     }), 1, 3, false);
@@ -120,8 +123,8 @@ int main() {
     std::cout << "Reduced:\n" << A7 << "\n";
     std::cout << "Rank: " << rank(A7) << "\n\n";
 
-    // Test 9: Single Column
-    std::cout << "Test 9: Single Column\n";
+    // Test: Single Column
+    std::cout << "Test: Single Column\n";
     Matrix A8(std::vector<std::vector<double>>({
         {1},
         {0},
@@ -132,8 +135,8 @@ int main() {
     std::cout << "Reduced:\n" << A8 << "\n";
     std::cout << "Rank: " << rank(A8) << "\n\n";
 
-    // Test 10: Real Matrix with Elimination
-    std::cout << "Test 10: Real Coefficients\n";
+    // Test: Real Matrix with Elimination
+    std::cout << "Test: Real Coefficients\n";
     Matrix A9(std::vector<std::vector<double>>({
         {1.0, 1.00001},
         {1.0, 1.0}
@@ -143,8 +146,8 @@ int main() {
     std::cout << "Reduced:\n" << A9 << "\n";
     std::cout << "Rank: " << rank(A9) << "\n\n";
 
-    // Test 11: Complex Elimination
-    std::cout << "Test 11: Mixed Elimination\n";
+    // Test: Complex Elimination
+    std::cout << "Test: Mixed Elimination\n";
     Matrix A10(std::vector<std::vector<double>>({
         {2, 4, 6, 8},
         {1, 3, 5, 7},
@@ -156,8 +159,8 @@ int main() {
     std::cout << "Reduced:\n" << A10 << "\n";
     std::cout << "Rank: " << rank(A10) << "\n\n";
 
-    // Test 12: Floating point stability
-    std::cout << "Test 12: Floating Point Stability Test:\n";
+    // Test: Floating point stability
+    std::cout << "Test: Floating Point Stability Test:\n";
     Matrix A_fp({
         {1e-10, 1},
         {1, 1e-10}
@@ -167,8 +170,8 @@ int main() {
     std::cout << "Reduced:\n" << A_fp << "\n";
     std::cout << "Rank: " << rank(A_fp) << "\n\n";
 
-    // Test 13: Arbitrary Test
-    std::cout << "Test 13: Arbitrary Test Matrix:\n";
+    // Test: Arbitrary Test
+    std::cout << "Test: Arbitrary Test Matrix:\n";
     Matrix A_hr({
         {1, 0, 0, 1},
         {0, 1, 0, 1},
@@ -179,8 +182,8 @@ int main() {
     std::cout << "Reduced:\n" << A_hr << "\n";
     std::cout << "Rank: " << rank(A_hr) << "\n\n";
 
-    // Test 14: Random 5x5 Dense Matrix
-    std::cout << "Test 14: Random Dense 5x5 Matrix:\n";
+    // Test: Random 5x5 Dense Matrix
+    std::cout << "Test: Random Dense 5x5 Matrix:\n";
     Matrix A_dense({
         {2, 4, 6, 8, 10},
         {1, 3, 5, 7, 9},
@@ -214,6 +217,7 @@ int main() {
         {3, 6, 9},   
         {1, 1, 0}    
     }, 4, 3, false);
+    std::cout << A_m2 << std::endl;
     Matroid M_m2 = Matroid<Matrix, Vector>(A_m2);
     Matrix basis2 = M_m2.min_optimize_matroid();
     std::cout << "Optimized Matroid:\n" << basis2 << "\n";

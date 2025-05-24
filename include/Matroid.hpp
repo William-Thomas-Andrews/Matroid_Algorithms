@@ -2,6 +2,8 @@
 #include "Graph.hpp"
 #include "Oracle.hpp"
 
+// SET being the type of input set, like Graph, or a Matrix
+// ELEMENT being the corresponding element for each set, like Edge for graphs, and Vector for matrices
 template <class SET, typename ELEMENT>
 class Matroid {
     private:
@@ -30,6 +32,11 @@ class Matroid {
                 ground_set.pop();
             }
             return solution_set;
+        }
+
+        // TODO
+        ELEMENT matroid_exchange_property(Matroid& M){
+
         }
 
         friend SET matroid_intersection(Matroid& M1, Matroid& M2);
