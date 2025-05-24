@@ -1,25 +1,17 @@
 #include <iomanip>
 
-template <typename ELEMENT_TYPE>
+template <typename ELEMENT>
 class MinCompare {
     public:
-        bool operator()(ELEMENT_TYPE a, ELEMENT_TYPE b) {
-            // if (a > b) {
-            //     return true;
-            // }
-            // return false;
+        bool operator()(ELEMENT a, ELEMENT b) {
             return (a > b);
         }
 };
 
-template <typename ELEMENT_TYPE>
+template <typename ELEMENT>
 class MaxCompare {
     public:
-        bool operator()(ELEMENT_TYPE a, ELEMENT_TYPE b) {
-            // if (a < b) {
-            //     return true;
-            // }
-            // return false;
+        bool operator()(ELEMENT a, ELEMENT b) {
             return (a < b);
         }
 };

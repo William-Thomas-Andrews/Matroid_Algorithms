@@ -11,7 +11,6 @@ private:
     int columns;
     std::vector<Vector> data; // columns entries of row vectors
     bool is_row_reduced = false;
-    // bool linearly_independent = false;
     
 public:
     Matrix() : rows(0), columns(0) { // Empty Matrix
@@ -81,29 +80,7 @@ public:
         }
         // row_reduce(*this); // Can be enabled for auto row-reduction
     }
-    // Matrix(const std::vector<double> input_data, int r, int c) : rows(r), columns(c) {
-    //     if (input_data.size() != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); }
-    //     int index = 0;
-    //     for (int j = 0; j < columns; j++) {
-    //         Vector v = Vector();
-    //         for (int i = 0; i < rows; i++) {
-    //             v.add(input_data[i + j*rows]);
-    //             index++;
-    //         }
-    //         this->add_element(v);
-    //     }
-    // }
-    // TODO Fix C-style array input
-    // Matrix(const double* input_data, int input_data_size, int r, int c) : rows(r), columns(c), data(input_data, input_data + input_data_size) { 
-    //     if (input_data_size != r*c) { throw std::invalid_argument("Size of array does not match dimension sizes."); } 
-    //     for (int i = 0; i < c; i++) {
-    //         data.push_back({});
-    //         for (int j = 0; j < input_data[i].size(); j++) {
-    //             data[i].push_back(input_data[i][j]);
-    //         }
-    //     } 
-    // }
-    // TODO std::array input
+    
     // Copy Constructor
     Matrix(const Matrix& A) : rows(A.rows), columns(A.columns), data(A.data) {
         // row_reduce(*this); // Can be enabled for auto row-reduction

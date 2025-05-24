@@ -229,6 +229,7 @@ int main() {
         {3, 6, 9},   // Dependent
         {1, 1, 0}    // Independent
     }, 3, 4, true);
+    std::cout << A_m3 << "\n";
     Matroid M_m3 = Matroid<Matrix, Vector>(A_m3);
     Matrix basis3 = M_m3.max_optimize_matroid();
     std::cout << "Optimized Matroid:\n" << basis3 << "\n";
@@ -243,6 +244,7 @@ int main() {
         {3, 6, 9},   // Dependent
         {1, 1, 0}    // Independent
     }, 3, 4, true);
+    std::cout << A_m4 << "\n";
     Matroid M_m4 = Matroid<Matrix, Vector>(A_m4);
     Matrix basis4 = M_m4.min_optimize_matroid();
     std::cout << "Optimized Matroid:\n" << basis4 << "\n";

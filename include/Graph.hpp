@@ -13,63 +13,34 @@ class Edge {
         Edge(Vertex v1, Vertex v2, Weight w) : v(v1 > v2 ? v1 : v2), u(v1 > v2 ? v2 : v1), weight(w) {}
 
         std::string get_string() {
-            std::string str = "(";
-            str += std::to_string(v);
-            str += " - ";
-            str += std::to_string(u);
-            str += ")";
-            str += "(";
-            str += std::to_string(weight);
-            str += ")";
+            std::string str = "(" + std::to_string(v) + " - " + std::to_string(u) + ")" + "(" + std::to_string(weight) + ")";
             return str;
         }
 
-        Vertex get_left() {
-            return v;
-        }
+        Vertex get_left() { return v; }
+        Vertex get_right() { return u; }
+        Weight get_weight() { return weight; }
 
-        Vertex get_right() {
-            return u;
-        }
-
-        Weight get_weight() {
-            return weight;
-        }
-
-        void set_weight(Weight w) {
-            weight = w;
-        }
+        void set_weight(Weight w) { weight = w; }
 
         // Comparison operator <
         bool operator<(Edge& e2) {
-            if (weight < e2.get_weight()) {
-                return true;
-            }
-            return false;
+            return (weight < e2.get_weight());
         }
 
         // Comparison operator >
         bool operator>(Edge& e2) {
-            if (weight > e2.get_weight()) {
-                return true;
-            }
-            return false;
+            return (weight > e2.get_weight());
         }
 
         // Comparison operator ==
         bool operator==(Edge& e2) {
-            if (weight == e2.get_weight()) {
-                return true;
-            }
-            return false;
+            return (weight == e2.get_weight());
         }
 
         // Comparison operator !=
         bool operator!=(Edge& e2) {
-            if (weight != e2.get_weight()) {
-                return true;
-            }
-            return false;
+            return (weight != e2.get_weight());
         }
 
         friend std::ostream& operator<<(std::ostream& os, Edge& e);
@@ -84,7 +55,6 @@ std::ostream& operator<<(std::ostream& os, Edge& e) {
 class Graph {
     private:
         std::vector<Edge> edges;
-        // std::set<Vertex> vertices; // honestly not really needed
         UnionFind union_set;
     public:
         Graph() {}
@@ -94,8 +64,6 @@ class Graph {
                 Edge e = Edge(std::get<0>(x), std::get<1>(x), std::get<2>(x));
                 this->add_element(e);
                 union_set.union_operation(e.get_left(), e.get_right());
-                // vertices.insert(e.get_left());
-                // vertices.insert(e.get_right());
             }
         }
 
@@ -109,10 +77,7 @@ class Graph {
         }
 
         bool not_empty() {
-            if (edges.empty()) {
-                return false;
-            }
-            return true;
+            return (!edges.empty());
         }
 
         Edge top() {
@@ -125,27 +90,21 @@ class Graph {
         // If adding Edge e does not create a cycle then it will return true
         bool is_independent(Edge& e) {
             // If both sides of the edge are in the same partition, 
-            if (union_set.find_operation(e.get_left()) == union_set.find_operation(e.get_right())) {
-                return false; // then it creates a cycle and we return false because adding 'e' is not valid if we want to keep the graph acyclic
-            }
-            return true; // otherwise, return true because both parititions are disjoint
+            // then it creates a cycle and we return false because adding 'e' is not valid if we want to keep the graph acyclic.
+            // Otherwise return true because both parititions are disjoint
+            return (!(union_set.find_operation(e.get_left()) == union_set.find_operation(e.get_right())));
         }   
 
         void add_element(Edge e) {
             edges.push_back(e);
             union_set.union_operation(e.get_left(), e.get_right());
-
         }
 
         void pop() {
             edges.pop_back();
         }
-
-        // int get_cardinality() {
-        //     return vertices.size();
-        // }
-
         // Matroid functions end ---------------------------------------------------------------------------------------------------------
+
 
         const std::vector<Edge>& get_data() {
             return edges;
