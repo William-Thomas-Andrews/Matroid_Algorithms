@@ -16,9 +16,7 @@ class Matroid {
             ground_set.min_sort();                 // For minimum basis
             while (ground_set.not_empty()) {
                 ELEMENT_TYPE e = ground_set.top();
-                if (oracle.independent(solution_set, e)) {
-                    solution_set.add_element(e);
-                }
+                if (oracle.independent(solution_set, e)) solution_set.add_element(e);
                 ground_set.pop();
             }
             return solution_set;
@@ -28,9 +26,7 @@ class Matroid {
             ground_set.max_sort();                 // For maximum basis
             while (ground_set.not_empty()) {
                 ELEMENT_TYPE e = ground_set.top();
-                if (oracle.independent(solution_set, e)) {
-                    solution_set.add_element(e);
-                }
+                if (oracle.independent(solution_set, e)) solution_set.add_element(e);
                 ground_set.pop();
             }
             return solution_set;

@@ -5,9 +5,10 @@ class Oracle {
     public:
         Oracle() {}
         bool independent(SET_TYPE S, ELEMENT_TYPE e) {
-            if (S.is_independent(e)) {
-                return true;
-            }
-            return false;
+            // if (S.is_independent(e)) {
+            //     return true;
+            // }
+            // return false;
+            return (S.is_independent(e));
         }
 };

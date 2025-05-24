@@ -1,6 +1,3 @@
-
-
-
 // A Mathematical Vector (in algebraic context)
 class Vector {
     private:

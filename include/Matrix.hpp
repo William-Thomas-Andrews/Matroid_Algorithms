@@ -1,8 +1,8 @@
+// #include <iostream>
+// #include <iomanip>
 #include <random>
-#include <iostream>
 #include "Vector.hpp"
 #include "Compare.hpp"
-#include <iomanip>
 
 
 class Matrix {
