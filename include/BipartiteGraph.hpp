@@ -1,12 +1,12 @@
 #include "Graph.hpp"
-// #include "Compare.hpp"
 #include <vector>
 #include <iostream>
 #include <algorithm>
 
 using Partition = int;
 
-class BipartiteEdge : public Edge {
+// Corresponds to the Edge type for Transversal Matroids
+class BipartiteEdge {
     private:
         Vertex v;
         Vertex u;
@@ -76,13 +76,11 @@ class BipartiteEdge : public Edge {
 
 
 // The input set for a Transversal Matroid
-class BipartiteGraph : public Graph {
+class BipartiteGraph {
     private:
         std::vector<std::vector<BipartiteEdge>> edges;
         std::vector<int> partition_map;
         std::vector<Vertex> vertices;
-        // std::vector<Vertex> partition_1;
-        // std::vector<Vertex> partition_2;
         UnionFind union_set;
     public:
         BipartiteGraph() {}
@@ -172,7 +170,7 @@ class BipartiteGraph : public Graph {
         std::vector<Vertex>& get_vertices() {
             return vertices;
         }
-        
+
 
         // Matroid functions begin --------------------------------------------------------------------------------------------------
         void min_sort() {
@@ -219,6 +217,7 @@ class BipartiteGraph : public Graph {
         }
         // Matroid functions end ---------------------------------------------------------------------------------------------------------
 
+        
         bool in(Vertex v) {
             for (int i = 0; i < vertices.size(); i++) {
                 if (v == vertices[i]) return true;

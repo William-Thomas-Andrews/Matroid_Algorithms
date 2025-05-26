@@ -3,6 +3,9 @@
 
 int main() {
 
+    // Note: for sorting, the lists of elements within the sets are sorted in reverse order to account for the necessary reverse order
+    // of pushing and popping from the vector
+
     std::cout << "=== Small Matrix Test Suite ===\n\n";
 
     std::cout << "Matrix Test:\n\n"; 

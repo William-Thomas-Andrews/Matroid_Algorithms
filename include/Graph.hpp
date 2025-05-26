@@ -1,7 +1,6 @@
 #include <iostream>
 #include <algorithm>
 #include "UnionFind.hpp"
-// #include "Compare.hpp"
 
 
 using Vertex = unsigned long;
