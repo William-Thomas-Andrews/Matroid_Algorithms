@@ -413,28 +413,14 @@ int main() {
         {0, 3, 5, 1, 2},
         {1, 4, 2, 1, 2},
         {2, 5, 7, 1, 2},
+        {2, 6, 2, 1, 2}
     };
-    std::cout << "hee" << std::endl;
-    BipartiteGraph G_b2(edges);
+    BipartiteGraph G_b2(edges_b);
 
     std::cout << G_b2 << std::endl;
 
     Matroid M_b2 = Matroid<BipartiteGraph, Vertex>(G_b2, G_b2);
-    std::cout << "he" << std::endl;
     BipartiteGraph G_b3 = M_b2.min_optimize_matroid();
-        std::cout << "he" << std::endl;
     std::cout << G_b3 << std::endl;
-
-    // Vertex x = 0;
-    // assert(G_b2.is_independent(x));
-    // G_b2.add_element(0);
-    // G_b2.add_element(3);
-    // for (auto x : G_b2.get_vertices()) {
-    //     std::cout << x << std::endl;
-    // }
-    // x = 3;
-    // assert(!G_b2.is_independent(x)); // 0 already added, 3 is connected to 0
-    // assert(G_b2.in(0));
-    // std::cout << "[PASS] Independence check and vertex insertion work.\n";
-
+    std::cout << G_b3.get_vertices_string() << std::endl;
 }
