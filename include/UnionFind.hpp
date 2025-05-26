@@ -56,11 +56,7 @@ class UnionFind {
             std::string str = "";
             std::cout << union_data.size() << std::endl;
             for (int i = 0; i < union_data.size(); i++) {
-                str += "(";
-                str += std::to_string(i);
-                str += ", ";
-                str += std::to_string(union_data[i]);
-                str += ") ";
+                str += "(" + std::to_string(i) + ", " + std::to_string(union_data[i]) + ") ";
             }
             return str;
         }

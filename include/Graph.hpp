@@ -45,6 +45,7 @@ class Edge {
         // Comparison operator ==
         bool operator==(Edge& e2) {
             if (v == e2.get_left() and u == e2.get_right() and weight == e2.get_weight()) return true;
+            return false;
         }
 
         // Comparison operator !=

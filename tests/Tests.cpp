@@ -266,6 +266,66 @@ int main() {
 
 
 
+
+    std::cout << "\n==== TEST 1: BipartiteEdge Constructor and Accessors ====\n";
+
+    BipartiteEdge e(3, 5, 10, 1, 2);
+    assert(e.get_left() == 3);
+    assert(e.get_right() == 5);
+    assert(e.get_left_partition() == 1);
+    assert(e.get_right_partition() == 2);
+    assert(e.get_weight() == 10);
+    
+    std::cout << "[PASS] BipartiteEdge constructed and accessed correctly.\n";
+
+
+    std::cout << "\n==== TEST 2: BipartiteEdge Invalid Partition Check ====\n";
+    bool caught = false;
+    try {
+        BipartiteEdge e(1, 2, 5, 1, 3); // Invalid partition
+    } catch (std::invalid_argument& e) {
+        caught = true;
+        std::cout << "[INFO] Caught expected exception: " << e.what() << "\n";
+    }
+    assert(caught);
+    std::cout << "[PASS] Invalid partition check works.\n";
+
+
+    std::cout << "\n==== TEST 3: BipartiteGraph Construction from Tuple Data ====\n";
+
+    std::vector<std::tuple<Vertex, Vertex, Weight, Partition, Partition>> edges = {
+        {0, 3, 5, 1, 2},
+        {1, 4, 2, 1, 2},
+        {2, 5, 7, 1, 2},
+    };
+
+    BipartiteGraph G_b(edges);
+
+    assert(G_b.left_size() == 3);
+    assert(G_b.right_size() == 3);
+    std::cout << G_b.get_string();
+    std::cout << "[PASS] BipartiteGraph constructed and partition sizes correct.\n";
+
+
+    std::cout << "\n==== TEST 4: Independence Check and Optimization ====\n";
+
+    std::vector<std::tuple<Vertex, Vertex, Weight, Partition, Partition>> edges_b = {
+        {0, 3, 5, 1, 2},
+        {1, 4, 2, 1, 2},
+        {2, 5, 7, 1, 2},
+        {2, 6, 2, 1, 2}
+    };
+    BipartiteGraph G_b2(edges_b);
+
+    std::cout << G_b2 << std::endl;
+
+    Matroid M_b2 = Matroid<BipartiteGraph, Vertex>(G_b2, G_b2);
+    BipartiteGraph G_b3 = M_b2.min_optimize_matroid();
+    std::cout << G_b3 << std::endl;
+    std::cout << G_b3.get_vertices_string() << std::endl;
+
+
+
     std::cout << "=== Partition Matroid Test Suite ===\n\n";
 
     std::cout << "[TEST] Min Sort Test\n";
@@ -367,63 +427,4 @@ int main() {
     std::cout << "\nExpected: (5, P0), (3, P1), (4, P2)\n";
 
     std::cout << "\n[TEST] Optimization Test Passed if above output matches expectation\n";
-
-
-
-    std::cout << "\n==== TEST 1: BipartiteEdge Constructor and Accessors ====\n";
-
-    BipartiteEdge e(3, 5, 10, 1, 2);
-    assert(e.get_left() == 3);
-    assert(e.get_right() == 5);
-    assert(e.get_left_partition() == 1);
-    assert(e.get_right_partition() == 2);
-    assert(e.get_weight() == 10);
-    
-    std::cout << "[PASS] BipartiteEdge constructed and accessed correctly.\n";
-
-
-    std::cout << "\n==== TEST 2: BipartiteEdge Invalid Partition Check ====\n";
-    bool caught = false;
-    try {
-        BipartiteEdge e(1, 2, 5, 1, 3); // Invalid partition
-    } catch (std::invalid_argument& e) {
-        caught = true;
-        std::cout << "[INFO] Caught expected exception: " << e.what() << "\n";
-    }
-    assert(caught);
-    std::cout << "[PASS] Invalid partition check works.\n";
-
-
-    std::cout << "\n==== TEST 3: BipartiteGraph Construction from Tuple Data ====\n";
-
-    std::vector<std::tuple<Vertex, Vertex, Weight, Partition, Partition>> edges = {
-        {0, 3, 5, 1, 2},
-        {1, 4, 2, 1, 2},
-        {2, 5, 7, 1, 2},
-    };
-
-    BipartiteGraph G_b(edges);
-
-    assert(G_b.left_size() == 3);
-    assert(G_b.right_size() == 3);
-    std::cout << G_b.get_string();
-    std::cout << "[PASS] BipartiteGraph constructed and partition sizes correct.\n";
-
-
-    std::cout << "\n==== TEST 4: Independence Check and Optimization ====\n";
-
-    std::vector<std::tuple<Vertex, Vertex, Weight, Partition, Partition>> edges_b = {
-        {0, 3, 5, 1, 2},
-        {1, 4, 2, 1, 2},
-        {2, 5, 7, 1, 2},
-        {2, 6, 2, 1, 2}
-    };
-    BipartiteGraph G_b2(edges_b);
-
-    std::cout << G_b2 << std::endl;
-
-    Matroid M_b2 = Matroid<BipartiteGraph, Vertex>(G_b2, G_b2);
-    BipartiteGraph G_b3 = M_b2.min_optimize_matroid();
-    std::cout << G_b3 << std::endl;
-    std::cout << G_b3.get_vertices_string() << std::endl;
 }
