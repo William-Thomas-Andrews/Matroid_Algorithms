@@ -26,6 +26,7 @@ class Matroid {
             }
         }
 
+        // Minimum Greedy Algorithm
         SET min_optimize_matroid() {
             ground_set.min_sort();                 // For minimum basis
             while (ground_set.not_empty()) {
@@ -36,6 +37,7 @@ class Matroid {
             return solution_set;
         }
 
+        // Maximum Greedy Algorithm
         SET max_optimize_matroid() {
             ground_set.max_sort();                 // For maximum basis
             while (ground_set.not_empty()) {
