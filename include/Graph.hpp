@@ -83,7 +83,6 @@ class Graph {
         }
         Graph(std::vector<Edge> input_data) : union_set(UnionFind(input_data.size())) {
             for (Edge e : input_data) {
-                // Edge e = Edge(std::get<0>(x), std::get<1>(x), std::get<2>(x));
                 this->add_element(e);
                 union_set.union_operation(e.get_left(), e.get_right());
             }
