@@ -1,9 +1,10 @@
 #include "VectorSpace.hpp"
 // #include "Graph.hpp"
-// #include "BipartiteGraph.hpp"
+#include "BipartiteGraph.hpp"
 // #include "TransversalMatroid.hpp"
 #include "PartitionMatroid.hpp"
 #include "Oracle.hpp"
+
 
 // -------------------------------------------------------------------------------------------------- //
 // "Matroids take “It’s useful to have multiple perspectives on this thing” to a ridiculous extent."  //
@@ -21,6 +22,11 @@ class Matroid {
     public:
         Matroid() : ground_set(SET()), solution_set(SET()) {}
         Matroid(SET& input_set) : ground_set(SET(input_set)), solution_set(SET()) {}
+        Matroid(SET& input_set, SET& other_set) : ground_set(SET(input_set)), solution_set(SET(other_set)) {
+            while (!(other_set.get_vertices().empty())) {
+                other_set.remove_element();
+            }
+        }
 
         // Note: for sorting, the lists of elements within the sets are sorted in reverse order to account for the necessary reverse order
         // of pushing and popping from the vector
@@ -28,8 +34,12 @@ class Matroid {
         SET min_optimize_matroid() {
             ground_set.min_sort();                 // For minimum basis
             while (ground_set.not_empty()) {
+                std::cout << "he" << std::endl;
                 ELEMENT e = ground_set.top();
+                    std::cout << "he" << std::endl;
+                    
                 if (oracle.independent(solution_set, e)) solution_set.add_element(e);
+                    std::cout << "he" << std::endl;
                 ground_set.pop();
             }
             return solution_set;

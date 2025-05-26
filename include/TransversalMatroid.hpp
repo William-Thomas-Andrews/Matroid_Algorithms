@@ -2,6 +2,7 @@
 
 class TransversalMatroid {
     private:
+    
         std::vector<Graph> ground_set;
         std::vector<Graph> used_graphs;
         Graph mapped_graph;
