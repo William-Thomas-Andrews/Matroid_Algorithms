@@ -23,8 +23,8 @@ class Matroid {
         Matroid() : ground_set(SET()), solution_set(SET()) {}
         Matroid(SET& input_set) : ground_set(SET(input_set)), solution_set(SET()) {}
         Matroid(SET& input_set, SET& other_set) : ground_set(SET(input_set)), solution_set(SET(other_set)) {
-            while (!(other_set.get_vertices().empty())) {
-                other_set.remove_element();
+            while (!(solution_set.get_vertices().empty())) {
+                solution_set.remove_element();
             }
         }
 
@@ -34,12 +34,8 @@ class Matroid {
         SET min_optimize_matroid() {
             ground_set.min_sort();                 // For minimum basis
             while (ground_set.not_empty()) {
-                std::cout << "he" << std::endl;
                 ELEMENT e = ground_set.top();
-                    std::cout << "he" << std::endl;
-                    
                 if (oracle.independent(solution_set, e)) solution_set.add_element(e);
-                    std::cout << "he" << std::endl;
                 ground_set.pop();
             }
             return solution_set;

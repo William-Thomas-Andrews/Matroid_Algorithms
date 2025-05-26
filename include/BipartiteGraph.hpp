@@ -98,16 +98,11 @@ class BipartiteGraph : public Graph {
                     std::cout << "Edge could not be added because Vertex_1 and Vertex_2 are both in the same partition, violating transversal bijection." << std::endl;;
                     continue;
                 }
-                if (left >= partition_map.size()) {
-                    while (partition_map.size() <= left) {
-                        partition_map.push_back(-1);
-                    }
-                }
-                if (right >= partition_map.size()) {
-                    while (partition_map.size() <= right) {
-                        partition_map.push_back(-1);
-                    }
-                }
+                Vertex max_vertex = std::max(left, right);
+                if (partition_map.size() <= max_vertex)
+                    partition_map.resize(max_vertex + 1, -1);
+                if (edges.size() <= max_vertex)
+                    edges.resize(max_vertex + 1);
                 partition_map[left] = e.get_left_partition();
                 partition_map[right] = e.get_right_partition();
                 edges[e.get_left()].push_back(e);
@@ -127,19 +122,11 @@ class BipartiteGraph : public Graph {
                     std::cout << "Edge could not be added because Vertex_1 and Vertex_2 are both in the same partition, violating transversal bijection." << std::endl;;
                     continue;
                 }
-                if (left >= partition_map.size()) {
-                    while (partition_map.size() <= left) {
-                        partition_map.push_back(-1);
-                    }
-                }
-                if (right >= partition_map.size()) {
-                    while (partition_map.size() <= right) {
-                        partition_map.push_back(-1);
-                    }
-                }
-                if (edges.size() <= std::max(left, right)) {
-                    edges.resize(std::max(left, right) + 1);
-                }
+                Vertex max_vertex = std::max(left, right);
+                if (partition_map.size() <= max_vertex)
+                    partition_map.resize(max_vertex + 1, -1);
+                if (edges.size() <= max_vertex)
+                    edges.resize(max_vertex + 1);
                 partition_map[left] = e.get_left_partition();
                 partition_map[right] = e.get_right_partition();
                 edges[e.get_left()].push_back(e);
@@ -185,10 +172,7 @@ class BipartiteGraph : public Graph {
         std::vector<Vertex>& get_vertices() {
             return vertices;
         }
-
-        // const std::vector<BipartiteEdge>& get_data() {
-        //     return edges;
-        // }
+        
 
         // Matroid functions begin --------------------------------------------------------------------------------------------------
         void min_sort() {
@@ -210,32 +194,20 @@ class BipartiteGraph : public Graph {
             }
         }
 
-        // If adding Edge e does not create a cycle then it will return true
+        // If adding Vertex v destroys the bijection (if v connects through an edge to another vertex already placed in the set), then return false
         bool is_independent(Vertex& v) {
-            // If both sides of the edge are in the same partition, 
-            // then it creates a cycle and we return false because adding 'e' is not valid if we want to keep the graph acyclic.
-            // Otherwise return true because both parititions are disjoint
-            // return (!(union_set.find_operation(e.get_left()) == union_set.find_operation(e.get_right())));
-            // for (int i = 0; i < edges.size(); i++) {
-            //     for (int j = 0; j < edges[i].size())
-            // }
-            std::cout << edges.size() << std::endl;
-                std::cout << "he" << std::endl;
+            if (in(v)) return false;
             for (int i = 0; i < edges[v].size(); i++) {
                 Vertex u = edges[v][i].other(v);
-                std::cout << "he" << std::endl;
                 if (in(u)) {
                     return false;
                 }
             }
-                std::cout << "he" << std::endl;
             return true;
         }   
 
         void add_element(Vertex v) {
-            // if (in(v)) { throw std::invalid_argument("Vertex is already in the set"); }
             vertices.push_back(v);
-            // union_set.union_operation(e.get_left(), e.get_right());
         }
 
         void remove_element() {
@@ -254,7 +226,16 @@ class BipartiteGraph : public Graph {
             return false;
         }
 
-
+        std::string get_vertices_string() {
+            std::string str = "";
+            for (int i = 0; i < vertices.size(); i++) {
+                str += std::to_string(vertices[i]);
+                if (i == vertices.size()-1) continue;
+                str += ", ";
+            }
+            str += "\n";
+            return str;
+        }
 
         friend std::ostream& operator<<(std::ostream& os, BipartiteGraph& G);
 };
