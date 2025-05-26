@@ -65,6 +65,7 @@ class PartitionMatroid {
         }
         // Matroid functions end ---------------------------------------------------------------------------------------------------------
 
+        
         std::string get_string() {
             std::string str = "{";
             for (int i = 0; i < set.size(); i++) {

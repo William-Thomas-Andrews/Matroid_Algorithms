@@ -1,4 +1,8 @@
 // A Mathematical Vector (in algebraic context)
+// Defined by two operations:
+// Vector addition:            v_1 + v_2 \in V
+// Scalar multiplication:    \lambda * v_1 \in V
+
 class Vector {
     private:
         std::vector<double> data;
@@ -169,7 +173,6 @@ Vector operator+(Vector& v1, Vector& v2) {
     else {
         int size = std::max(v1.data.size(), v2.data.size());
         Vector result = Vector(std::vector<double>(size, 0));
-        // TODO optimize
         for (int i = 0; i < v1.data.size(); i++) {
             result[i] += v1[i];
         }

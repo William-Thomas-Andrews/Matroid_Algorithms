@@ -1,5 +1,3 @@
-
-
 template <class SET, typename ELEMENT>
 class Oracle {
     public:

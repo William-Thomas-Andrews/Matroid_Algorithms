@@ -41,7 +41,6 @@ class VectorSpace {
             return false;
         }
 
-        // 'dim' operator
         friend int dim(const VectorSpace& V);
 };
 
