@@ -6,6 +6,7 @@
 using Vertex = unsigned long;
 using Weight = unsigned long;
 
+// Corresponds to the Edge type for Graphic Matroids
 class Edge {
     private:
         Vertex v;
