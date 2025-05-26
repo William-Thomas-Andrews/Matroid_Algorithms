@@ -16,11 +16,9 @@ class Matrix {
         int columns;
         std::vector<Vector> data; // columns entries of row vectors    
     public:
-        Matrix() : rows(0), columns(0) { // Empty Matrix
-            // data.push_back(Vector());
-        }
+        Matrix() : rows(0), columns(0) {} // Empty Matrix
         Matrix(int r, int c) : rows(r), columns(c) { // Random data
-            double min = 0; // Positive for now
+            double min = 0; 
             double max = 10;
             std::random_device rd;
             std::mt19937 gen(rd());
