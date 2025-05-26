@@ -131,10 +131,6 @@ class Graph {
             return edges;
         }
 
-        // std::vector<Edge>& get_data() {
-        //     return edges;
-        // }
-
         std::string get_string() {
             std::string str = "";
             for (auto edge : edges) {
