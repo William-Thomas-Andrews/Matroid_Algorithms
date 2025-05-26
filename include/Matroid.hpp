@@ -1,7 +1,14 @@
 #include "VectorSpace.hpp"
 // #include "Graph.hpp"
-#include "BipartiteGraph.hpp"
+// #include "BipartiteGraph.hpp"
+// #include "TransversalMatroid.hpp"
+#include "PartitionMatroid.hpp"
 #include "Oracle.hpp"
+
+// -------------------------------------------------------------------------------------------------- //
+// "Matroids take “It’s useful to have multiple perspectives on this thing” to a ridiculous extent."  //
+// -------------------------------------------------------------------------------------------------- //
+
 
 // SET being the type of input set, like Graph, or a Matrix
 // ELEMENT being the corresponding element for each set, like Edge for graphs, and Vector for matrices
@@ -14,6 +21,9 @@ class Matroid {
     public:
         Matroid() : ground_set(SET()), solution_set(SET()) {}
         Matroid(SET& input_set) : ground_set(SET(input_set)), solution_set(SET()) {}
+
+        // Note: for sorting, the lists of elements within the sets are sorted in reverse order to account for the necessary reverse order
+        // of pushing and popping from the vector
 
         SET min_optimize_matroid() {
             ground_set.min_sort();                 // For minimum basis

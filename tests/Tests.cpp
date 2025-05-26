@@ -1,4 +1,5 @@
 #include "../include/Matroid.hpp"
+#include <cassert>
 
 int main() {
 
@@ -196,6 +197,10 @@ int main() {
     std::cout << "Reduced:\n" << A_dense << "\n";
     std::cout << "Rank: " << rank(A_dense) << "\n\n";
 
+
+
+    std::cout << "=== Matroid Test Suite ===\n\n";
+
     std::cout << "Matroid Test: Maximize Independent Rows\n";
     Matrix A_m({
         {1, 2, 3},
@@ -257,5 +262,106 @@ int main() {
     std::cout << "Rank: " << rank(basis4) << "\n\n";
 
 
-    
+
+    std::cout << "=== Partition Matroid Test Suite ===\n\n";
+
+    std::cout << "[TEST] Min Sort Test\n";
+    std::vector<PartitionPair> elements = {
+        make_pair(5, 0),
+        make_pair(2, 1),
+        make_pair(8, 2),
+        make_pair(1, 3)
+    };
+
+    PartitionMatroid matroid(elements);
+    matroid.min_sort();
+
+
+    std::cout << "Expected order (reverse, to be expected): 8, 5, 2, 1\n";
+    std::cout << "Actual order:   " << matroid << "\n";
+
+
+    std::cout << "\n[TEST] Max Sort and Top Element Test\n";
+    std::vector<PartitionPair> elements_p0 = {
+        make_pair(3, 0),
+        make_pair(6, 1),
+        make_pair(2, 2)
+    };
+
+    PartitionMatroid matroid_p0(elements_p0);
+    matroid_p0.max_sort();
+
+    std::cout << "Expected top element: 6\n";
+    PartitionPair top = matroid_p0.top();
+    std::cout << "Actual top element:   " << top.get_element() << "\n";
+
+    assert(top.get_element() == 6);
+
+
+    std::cout << "\n[TEST] Independence Test\n";
+    std::vector<PartitionPair> elements_p1 = {
+        make_pair(1, 0),
+        make_pair(2, 1),
+    };
+
+    PartitionMatroid matroid_p1(elements_p1);
+
+    PartitionPair new_independent = make_pair(3, 2);
+    PartitionPair new_dependent   = make_pair(4, 1);
+
+    assert(matroid_p1.is_independent(new_independent) == true);
+    assert(matroid_p1.is_independent(new_dependent) == false);
+
+    std::cout << "Independent check passed.\n";
+
+
+    std::cout << "\n[TEST] Add and Pop Test\n";
+    PartitionMatroid matroid_p2;
+
+    assert(!matroid_p2.not_empty());
+    matroid_p2.add_element(make_pair(9, 4));
+    assert(matroid_p2.not_empty());
+    std::cout << "After add: " << matroid_p2 << "\n";
+
+    matroid_p2.pop();
+    assert(!matroid_p2.not_empty());
+    std::cout << "After pop: (should be empty)\n";
+
+
+    std::cout << "\n[TEST] Matroid Optimization Tests (Min & Max)\n";
+
+    std::vector<PartitionPair> elems = {
+        make_pair(5, 0),  // weight 5, partition 0
+        make_pair(2, 0),  // weight 2, partition 0 (same partition)
+        make_pair(3, 1),  // weight 3, partition 1
+        make_pair(4, 2),  // weight 4, partition 2
+        make_pair(1, 2)   // weight 1, partition 2 (same partition)
+    };
+
+    std::cout << "Input elements:\n";
+    for (auto& e : elems)
+        std::cout << "(" << e.get_element() << ", P" << e.get_partition() << ") ";
+    std::cout << "\n";
+
+    // Minimize weight (greedy picks lowest per partition)
+    PartitionMatroid min_matroid(elems);
+    Matroid<PartitionMatroid, PartitionPair> min_m(min_matroid);
+    PartitionMatroid min_basis = min_m.min_optimize_matroid();
+
+    std::cout << "\nMinimize Optimization Result:\n";
+    for (auto& e : min_basis.get_data())
+        std::cout << "(" << e.get_element() << ", P" << e.get_partition() << ") ";
+    std::cout << "\nExpected: (2, P0), (3, P1), (1, P2)\n";
+
+    // Maximize weight (greedy picks highest per partition)
+    PartitionMatroid max_matroid(elems);
+    Matroid<PartitionMatroid, PartitionPair> max_m(max_matroid);
+    PartitionMatroid max_basis = max_m.max_optimize_matroid();
+
+    std::cout << "\nMaximize Optimization Result:\n";
+    for (auto& e : max_basis.get_data())
+        std::cout << "(" << e.get_element() << ", P" << e.get_partition() << ") ";
+    std::cout << "\nExpected: (5, P0), (3, P1), (4, P2)\n";
+
+    std::cout << "\n[TEST] Optimization Test Passed if above output matches expectation\n";
 }

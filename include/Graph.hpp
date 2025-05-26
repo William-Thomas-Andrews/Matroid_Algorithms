@@ -1,5 +1,8 @@
-// #include <iostream>
+#include <iostream>
+#include <algorithm>
 #include "UnionFind.hpp"
+// #include "Compare.hpp"
+
 
 using Vertex = unsigned long;
 using Weight = unsigned long;
@@ -14,6 +17,11 @@ class Edge {
         Edge(Vertex v1, Vertex v2, Weight w) : v(v1 > v2 ? v1 : v2), u(v1 > v2 ? v2 : v1), weight(w) {}
 
         std::string get_string() {
+            std::string str = "(" + std::to_string(v) + " - " + std::to_string(u) + ")" + "(" + std::to_string(weight) + ")";
+            return str;
+        }
+
+        const std::string get_string() const {
             std::string str = "(" + std::to_string(v) + " - " + std::to_string(u) + ")" + "(" + std::to_string(weight) + ")";
             return str;
         }
@@ -36,7 +44,7 @@ class Edge {
 
         // Comparison operator ==
         bool operator==(Edge& e2) {
-            return (weight == e2.get_weight());
+            if (v == e2.get_left() and u == e2.get_right() and weight == e2.get_weight()) return true;
         }
 
         // Comparison operator !=
@@ -45,9 +53,15 @@ class Edge {
         }
 
         friend std::ostream& operator<<(std::ostream& os, Edge& e);
+        friend std::ostream& operator<<(std::ostream& os, const Edge& e);
 };
 
 std::ostream& operator<<(std::ostream& os, Edge& e) {
+    os << e.get_string();
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const Edge& e) {
     os << e.get_string();
     return os;
 }
@@ -114,9 +128,13 @@ class Graph {
         // Matroid functions end ---------------------------------------------------------------------------------------------------------
 
 
-        const std::vector<Edge>& get_data() {
+        std::vector<Edge>& get_data() {
             return edges;
         }
+
+        // std::vector<Edge>& get_data() {
+        //     return edges;
+        // }
 
         std::string get_string() {
             std::string str = "";
