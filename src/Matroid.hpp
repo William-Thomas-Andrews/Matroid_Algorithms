@@ -1,5 +1,3 @@
-#pragma once
-
 #include "VectorSpace.hpp"
 #include "BipartiteGraph.hpp"
 #include "PartitionMatroid.hpp"
@@ -20,13 +18,33 @@ class Matroid {
         SET solution_set;
         Oracle<SET, ELEMENT> oracle;
     public:
-        Matroid();
-        Matroid(SET& input_set);
-        Matroid(SET& input_set, SET& other_set);
+        Matroid() : ground_set(SET()), solution_set(SET()) {}
+        Matroid(SET& input_set) : ground_set(SET(input_set)), solution_set(SET()) {}
+        Matroid(SET& input_set, SET& other_set) : ground_set(SET(input_set)), solution_set(SET(other_set)) {
+            while (!(solution_set.get_vertices().empty())) {
+                solution_set.remove_element();
+            }
+        }
 
         // Minimum Greedy Algorithm
-        SET min_optimize_matroid();
+        SET min_optimize_matroid() {
+            ground_set.min_sort();                 // For minimum basis
+            while (ground_set.not_empty()) {
+                ELEMENT e = ground_set.top();
+                if (oracle.independent(solution_set, e)) solution_set.add_element(e);
+                ground_set.pop();
+            }
+            return solution_set;
+        }
 
         // Maximum Greedy Algorithm
-        SET max_optimize_matroid();
+        SET max_optimize_matroid() {
+            ground_set.max_sort();                 // For maximum basis
+            while (ground_set.not_empty()) {
+                ELEMENT e = ground_set.top();
+                if (oracle.independent(solution_set, e)) solution_set.add_element(e);
+                ground_set.pop();
+            }
+            return solution_set;
+        }
 };
