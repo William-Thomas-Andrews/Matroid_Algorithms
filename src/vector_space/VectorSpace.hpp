@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include "Matrix.hpp"
 
@@ -9,41 +11,18 @@ class VectorSpace {
         std::vector<std::unique_ptr<Matrix>> matrix_collection;
 
     public:
-        VectorSpace() : dimension(0) {
-            standard_basis = Matrix(0, 1, 1);
-        }
-        VectorSpace(int input_dimension) : dimension(input_dimension) {
-            standard_basis = Matrix(0, input_dimension, input_dimension);
-            for (int i = 0, j = 0; i < dimension; i++, j++) {
-                standard_basis(i, j) = 1;
-            }
-        }
+        VectorSpace();
+        VectorSpace(int input_dimension);
 
-        void add_matrix(Matrix& A) {
-            if (A.get_rows() > dimension) { throw std::invalid_argument("The input matrix cannot have a larger dimension than the vector space"); }
-            std::unique_ptr<Matrix> ptr = std::make_unique<Matrix>(A);
-            matrix_collection.push_back(std::move(ptr));
-        }
+        void add_matrix(Matrix& A);
 
-        void print_standard_basis() {
-            std::cout << standard_basis << std::endl;
-        }
+        void print_standard_basis();
 
-        Matrix& get_matrix(int index) {
-            if (index >= dimension or index < 0) { throw std::invalid_argument("Index out of bounds"); }
-            return *matrix_collection[index];
-        }
+        Matrix& get_matrix(int index);
 
-        bool check_linear_independence(Matrix& A, Vector& v) {
-            if (A.is_independent(v)) {
-                return true;
-            }
-            return false;
-        }
+        bool check_linear_independence(Matrix& A, Vector& v);
 
         friend int dim(const VectorSpace& V);
 };
 
-int dim(const VectorSpace& V) {
-    return V.dimension;
-}
+int dim(const VectorSpace& V);
