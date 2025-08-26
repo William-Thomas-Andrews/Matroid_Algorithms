@@ -4,18 +4,20 @@
 This project implements multiple **matroid algorithm** in C++ 
 
 ## Features
-- 
+- Includes multiple different implementations of matroid algorithms for: graph matroids, linear matroids, partition matroids, and bipartite graph matroids
+- Contains robust test cases
+- An in-depth write-up describing the algebraic theory behind the code with the filename **Matroid_Theory_Project.pdf**
+- Uses an efficient generic programming format with templated types. This allows for extremely flexible use cases
 
 ## Requirements
 - C++20 or later  
-- [Folly](https://github.com/facebook/folly)  
 - CMake (for build system)  
 
 ## Installation
 ```bash
 # Clone the repository
-git clone https://github.com/William-Thomas-Andrews/Shortest_Path_Algorithms.git
-cd Shortest_Path_Algorithms
+git clone https://github.com/William-Thomas-Andrews/Matroid_Algorithms.git
+cd Matroid_Algorithms
 
 # Build
 cd scripts/
