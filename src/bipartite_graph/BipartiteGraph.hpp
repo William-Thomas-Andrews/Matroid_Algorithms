@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graph.hpp"
+#include "Compare.hpp"
 // #include <vector>
 // #include <iostream>
 // #include <algorithm>

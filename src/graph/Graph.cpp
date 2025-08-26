@@ -2,7 +2,7 @@
 #include <algorithm>
 // #include "UnionFind.hpp"
 #include "Graph.hpp"
-#include "Compare.cpp"
+#include "Compare.hpp"
 
 
 // Corresponds to the Edge type for Graphic Matroids

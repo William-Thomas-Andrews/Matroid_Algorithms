@@ -1,9 +1,9 @@
 #pragma once
 
-#include "VectorSpace.cpp"
-#include "BipartiteGraph.cpp"
-#include "PartitionMatroid.cpp"
-#include "Oracle.cpp"
+#include "VectorSpace.hpp"
+#include "BipartiteGraph.hpp"
+#include "PartitionMatroid.hpp"
+#include "Oracle.hpp"
 
 
 // -------------------------------------------------------------------------------------------------- //

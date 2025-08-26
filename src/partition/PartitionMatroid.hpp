@@ -1,9 +1,10 @@
+#pragma once
+
 #include <vector>
 #include <tuple>
 // #include <algorithm>
-#pragma once
 
-#include "Compare.cpp"
+#include "Compare.hpp"
 
 
 struct PartitionPair {

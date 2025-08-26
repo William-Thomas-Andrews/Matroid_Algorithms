@@ -4,8 +4,9 @@
 #include <iomanip>
 #include <sstream>
 #include <random>
-#include "Vector.cpp"
-#include "Compare.cpp"
+
+#include "Vector.hpp"
+#include "Compare.hpp"
 
 
 const double EPS = 1e-10;
@@ -86,4 +87,4 @@ void row_reduce(Matrix& A);
 int no_reduce_rank(Matrix& A);
 int rank(Matrix& A);
 
-std::ostream& operator<<(std::ostream& os, Matrix& A);
+std::ostream& operator<<(std::ostream& os, const Matrix& A);
