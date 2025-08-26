@@ -1,4 +1,4 @@
-#include "../include/Matroid.hpp"
+#include "Matroid.hpp"
 #include <cassert>
 
 int main() {
