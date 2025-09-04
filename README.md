@@ -24,3 +24,8 @@ cd scripts/
 ./configure.sh
 ./build.sh
 ./run.sh
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
