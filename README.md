@@ -24,9 +24,9 @@ cd scripts/
 ./configure.sh
 ./build.sh
 ./run.sh
-
+```
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/William-Thomas-Andrews/Matroid_Algorithms/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
